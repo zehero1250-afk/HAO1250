@@ -1,0 +1,365 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "version": {
+      "default": "arpg-0.2",
+      "type": "string"
+    },
+    "progression": {
+      "type": "object",
+      "properties": {
+        "levelCap": {
+          "$ref": "#/$defs/__schema0"
+        },
+        "expGrowthRate": {
+          "type": "number"
+        },
+        "baseExpToNext": {
+          "$ref": "#/$defs/__schema0"
+        }
+      }
+    },
+    "world": {
+      "type": "object",
+      "properties": {
+        "day": {
+          "$ref": "#/$defs/__schema0"
+        },
+        "time": {
+          "default": "清晨",
+          "type": "string"
+        },
+        "weather": {
+          "default": "阴",
+          "type": "string"
+        },
+        "location": {
+          "default": "废船村",
+          "type": "string"
+        },
+        "danger": {
+          "$ref": "#/$defs/__schema1"
+        },
+        "noise": {
+          "$ref": "#/$defs/__schema1"
+        },
+        "exploration": {
+          "default": "安全区",
+          "type": "string",
+          "enum": [
+            "安全区",
+            "探索中",
+            "遭遇中",
+            "战斗中",
+            "结算中"
+          ]
+        }
+      }
+    },
+    "player": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "default": "陈春璃",
+          "type": "string"
+        },
+        "profession": {
+          "default": "村民",
+          "type": "string"
+        },
+        "level": {
+          "$ref": "#/$defs/__schema0"
+        },
+        "exp": {
+          "$ref": "#/$defs/__schema2"
+        },
+        "expToNext": {
+          "$ref": "#/$defs/__schema0"
+        },
+        "hp": {
+          "$ref": "#/$defs/__schema2"
+        },
+        "maxHp": {
+          "$ref": "#/$defs/__schema0"
+        },
+        "stamina": {
+          "$ref": "#/$defs/__schema1"
+        },
+        "hunger": {
+          "$ref": "#/$defs/__schema1"
+        },
+        "thirst": {
+          "$ref": "#/$defs/__schema1"
+        },
+        "radiation": {
+          "$ref": "#/$defs/__schema1"
+        },
+        "injury": {
+          "$ref": "#/$defs/__schema1"
+        },
+        "atk": {
+          "$ref": "#/$defs/__schema0"
+        },
+        "def": {
+          "$ref": "#/$defs/__schema0"
+        },
+        "speed": {
+          "$ref": "#/$defs/__schema0"
+        },
+        "crit": {
+          "$ref": "#/$defs/__schema1"
+        },
+        "gold": {
+          "$ref": "#/$defs/__schema2"
+        },
+        "ammo": {
+          "$ref": "#/$defs/__schema2"
+        },
+        "medkit": {
+          "$ref": "#/$defs/__schema2"
+        },
+        "scrap": {
+          "$ref": "#/$defs/__schema2"
+        }
+      }
+    },
+    "equipment": {
+      "default": {
+        "mainWeapon": "锈迹手枪",
+        "subWeapon": "应急短刀",
+        "head": "破布头巾",
+        "chest": "废铁拼接护甲",
+        "hands": "磨损手套",
+        "legs": "旧工装裤",
+        "accessory1": "旧世界指南针",
+        "accessory2": "空"
+      },
+      "type": "object",
+      "properties": {
+        "mainWeapon": {
+          "default": "锈迹手枪",
+          "type": "string"
+        },
+        "subWeapon": {
+          "default": "应急短刀",
+          "type": "string"
+        },
+        "head": {
+          "default": "破布头巾",
+          "type": "string"
+        },
+        "chest": {
+          "default": "废铁拼接护甲",
+          "type": "string"
+        },
+        "hands": {
+          "default": "磨损手套",
+          "type": "string"
+        },
+        "legs": {
+          "default": "旧工装裤",
+          "type": "string"
+        },
+        "accessory1": {
+          "default": "旧世界指南针",
+          "type": "string"
+        },
+        "accessory2": {
+          "default": "空",
+          "type": "string"
+        }
+      }
+    },
+    "combat": {
+      "type": "object",
+      "properties": {
+        "inBattle": {
+          "default": false,
+          "type": "boolean"
+        },
+        "round": {
+          "$ref": "#/$defs/__schema0"
+        },
+        "enemy": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "default": "无",
+              "type": "string"
+            },
+            "category": {
+              "default": "无",
+              "type": "string"
+            },
+            "threat": {
+              "default": "I",
+              "type": "string",
+              "enum": [
+                "I",
+                "II",
+                "III",
+                "IV",
+                "V",
+                "VI"
+              ]
+            },
+            "level": {
+              "$ref": "#/$defs/__schema0"
+            },
+            "hp": {
+              "$ref": "#/$defs/__schema2"
+            },
+            "maxHp": {
+              "$ref": "#/$defs/__schema0"
+            },
+            "intent": {
+              "default": "观望",
+              "type": "string"
+            },
+            "expReward": {
+              "$ref": "#/$defs/__schema2"
+            },
+            "elite": {
+              "default": false,
+              "type": "boolean"
+            },
+            "bountyBoss": {
+              "default": false,
+              "type": "boolean"
+            }
+          }
+        },
+        "lastCheck": {
+          "default": "尚未进行判定",
+          "type": "string"
+        },
+        "lastAction": {
+          "default": "待命",
+          "type": "string"
+        },
+        "options": {
+          "default": [
+            {
+              "label": "观察情况",
+              "risk": "低"
+            },
+            {
+              "label": "谨慎接近",
+              "risk": "中"
+            },
+            {
+              "label": "主动交战",
+              "risk": "高"
+            }
+          ],
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "label": {
+                "default": "观察情况",
+                "type": "string"
+              },
+              "risk": {
+                "default": "低",
+                "type": "string",
+                "enum": [
+                  "低",
+                  "中",
+                  "高"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "quest": {
+      "default": {
+        "id": "quest-001",
+        "title": "废船村外围清剿",
+        "stage": "可接取",
+        "target": "清理村外1处低威胁怪物点",
+        "progress": "0/1",
+        "reward": "80g，子弹x12，废料x4"
+      },
+      "type": "object",
+      "properties": {
+        "id": {
+          "default": "none",
+          "type": "string"
+        },
+        "title": {
+          "default": "暂无任务",
+          "type": "string"
+        },
+        "stage": {
+          "default": "待命",
+          "type": "string"
+        },
+        "target": {
+          "default": "无",
+          "type": "string"
+        },
+        "progress": {
+          "default": "未开始",
+          "type": "string"
+        },
+        "reward": {
+          "default": "无",
+          "type": "string"
+        }
+      }
+    },
+    "status": {
+      "type": "object",
+      "properties": {
+        "effects": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reputationShipVillage": {
+          "type": "number"
+        },
+        "wantedLevel": {
+          "type": "number"
+        },
+        "campDanger": {
+          "$ref": "#/$defs/__schema1"
+        }
+      }
+    },
+    "log": {
+      "default": {
+        "summary": "你是废船村的普通村民，局势恶化后被迫卷入外圈清剿与求生行动。",
+        "lootHint": "暂无掉落。"
+      },
+      "type": "object",
+      "properties": {
+        "summary": {
+          "default": "你是废船村的普通村民，局势恶化后被迫卷入外圈清剿与求生行动。",
+          "type": "string"
+        },
+        "lootHint": {
+          "default": "暂无掉落。",
+          "type": "string"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "__schema0": {
+      "type": "number"
+    },
+    "__schema1": {
+      "type": "number"
+    },
+    "__schema2": {
+      "type": "number"
+    }
+  }
+}

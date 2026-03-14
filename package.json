@@ -2,8 +2,10 @@
   "scripts": {
     "build:dev": "webpack --mode development",
     "build": "webpack --mode production && node scripts/copy-statusbar-to-regex.js",
+    "ship:build": "pnpm build && pnpm ship",
     "watch": "webpack --mode development --watch --progress",
     "serve:dist": "node scripts/serve-dist-cors.js",
+    "ship": "node scripts/ship.mjs",
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,css,scss,html,vue}\" --no-error-on-unmatched-pattern",
     "lint": "eslint",
     "lint:fix": "eslint --fix",

@@ -44,27 +44,62 @@
           "items": {
             "type": "object",
             "properties": {
-              "名称": { "type": "string" },
-              "领袖": { "type": "string" },
-              "人数": { "type": "string" },
-              "背景": { "type": "string" },
-              "地点": { "type": "string" },
-              "近期活动": { "type": "string" }
-            }
+              "名称": {
+                "type": "string"
+              },
+              "领袖": {
+                "type": "string"
+              },
+              "人数": {
+                "type": "string"
+              },
+              "背景": {
+                "type": "string"
+              },
+              "地点": {
+                "type": "string"
+              },
+              "近期活动": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "名称"
+            ]
           }
         },
         "附近信息": {
           "default": [],
           "type": "array",
           "items": {
-            "type": "string"
-          }
+            "type": "object",
+            "properties": {
+              "标题": {
+                "type": "string"
+              },
+              "内容": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalItems": true
         },
         "小道消息": {
           "default": [],
           "type": "array",
           "items": {
-            "type": "string"
+            "type": "object",
+            "properties": {
+              "标题": {
+                "type": "string"
+              },
+              "来源": {
+                "type": "string"
+              },
+              "内容": {
+                "type": "string"
+              }
+            }
           }
         },
         "任务列表": {
@@ -76,7 +111,16 @@
               "标题": {
                 "type": "string"
               },
+              "委托人": {
+                "type": "string"
+              },
               "描述": {
+                "type": "string"
+              },
+              "完成奖励": {
+                "type": "string"
+              },
+              "进度": {
                 "type": "string"
               },
               "状态": {
@@ -84,10 +128,10 @@
               }
             },
             "required": [
-              "标题",
-              "描述"
+              "标题"
             ]
-          }
+          },
+          "additionalItems": true
         }
       }
     },
@@ -140,11 +184,23 @@
           "default": [],
           "type": "array",
           "items": {
-            "type": "string"
-          },
-          "additionalItems": true
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          }
         },
         "货币": {
+          "type": "number"
+        },
+        "积分": {
           "type": "number"
         },
         "最近检定": {
@@ -255,13 +311,23 @@
             "type": "string",
             "description": "NPC标识"
           },
-          "additionalProperties": true
+          "additionalProperties": {
+            "type": "number"
+          }
         },
         "RP点": {
           "type": "number"
         },
         "抽奖次数": {
           "type": "number"
+        },
+        "本期奖池": {
+          "default": [],
+          "maxItems": 4,
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/__schema2"
+          }
         },
         "奖池": {
           "default": [],
@@ -292,6 +358,27 @@
                   "防具",
                   "饰物"
                 ]
+              },
+              "可装备部位": {
+                "type": "string"
+              },
+              "词条": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "伤害骰": {
+                "type": "string"
+              },
+              "攻击力": {
+                "type": "number"
+              },
+              "固定伤害": {
+                "type": "number"
+              },
+              "防御": {
+                "type": "number"
               }
             },
             "required": [
@@ -311,140 +398,177 @@
           },
           "additionalItems": true
         },
+        "重要人物": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "default": {},
+            "type": "object",
+            "properties": {
+              "角色名称": {
+                "type": "string"
+              },
+              "头像": {
+                "type": "string"
+              },
+              "种族": {
+                "type": "string"
+              },
+              "等级": {
+                "default": 1,
+                "type": "number"
+              },
+              "职业": {
+                "type": "string"
+              },
+              "外貌描述": {
+                "type": "string"
+              },
+              "服装描述": {
+                "type": "string"
+              },
+              "性格": {
+                "type": "string"
+              },
+              "背景故事": {
+                "type": "string"
+              },
+              "能力值": {
+                "default": {
+                  "力量": 10,
+                  "敏捷": 10,
+                  "体质": 10,
+                  "智力": 10,
+                  "感知": 10,
+                  "魅力": 10
+                },
+                "$ref": "#/$defs/__schema0"
+              },
+              "内心话": {
+                "type": "string"
+              },
+              "好感度": {
+                "type": "number"
+              }
+            }
+          },
+          "additionalItems": true
+        },
+        "技能": {
+          "default": [],
+          "maxItems": 5,
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/__schema3"
+          }
+        },
+        "技能树": {
+          "default": [],
+          "maxItems": 18,
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/__schema4"
+          }
+        },
         "特质": {
           "default": [],
           "maxItems": 8,
           "type": "array",
           "items": {
-            "$ref": "#/$defs/__schema2"
+            "$ref": "#/$defs/__schema5"
+          }
+        },
+        "战历统计": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "杀敌数": {
+              "type": "number"
+            },
+            "杀敌等级": {
+              "default": 1,
+              "type": "number"
+            },
+            "使用道具数": {
+              "type": "number"
+            },
+            "使用道具等级": {
+              "default": 1,
+              "type": "number"
+            },
+            "任务完成数": {
+              "type": "number"
+            },
+            "任务完成等级": {
+              "default": 1,
+              "type": "number"
+            },
+            "检定成功次数": {
+              "type": "number"
+            },
+            "检定等级": {
+              "default": 1,
+              "type": "number"
+            },
+            "说服NPC次数": {
+              "type": "number"
+            },
+            "说服等级": {
+              "default": 1,
+              "type": "number"
+            }
+          }
+        },
+        "生理统计": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "口舌次数": {
+              "type": "number"
+            },
+            "肉棒次数": {
+              "type": "number"
+            },
+            "后穴次数": {
+              "type": "number"
+            },
+            "乳头次数": {
+              "type": "number"
+            },
+            "高潮次数": {
+              "type": "number"
+            },
+            "受虐次数": {
+              "type": "number"
+            }
+          }
+        },
+        "特殊特质": {
+          "default": [],
+          "maxItems": 6,
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/__schema6"
           }
         }
       }
     },
     "陈莹姬": {
+      "$ref": "#/$defs/__schema7"
+    },
+    "队伍陈莹姬": {
+      "$ref": "#/$defs/__schema7"
+    },
+    "队伍": {
       "default": {},
       "type": "object",
-      "properties": {
-        "种族": {
-          "default": "改造体",
-          "type": "string"
-        },
-        "等级": {
-          "default": 30,
-          "type": "number"
-        },
-        "当前HP": {
-          "default": 130,
-          "type": "number"
-        },
-        "最大HP": {
-          "default": 130,
-          "type": "number"
-        },
-        "能力值": {
-          "default": {
-            "力量": 14,
-            "敏捷": 14,
-            "体质": 12,
-            "智力": 12,
-            "感知": 13,
-            "魅力": 16
-          },
-          "$ref": "#/$defs/__schema0"
-        },
-        "威慑值": {
-          "default": 85,
-          "type": "number"
-        },
-        "服从度": {
-          "default": 90,
-          "type": "number"
-        },
-        "理智": {
-          "default": 45,
-          "type": "number"
-        },
-        "当前状态": {
-          "default": "巡视",
-          "type": "string"
-        },
-        "兴奋度": {
-          "type": "number"
-        },
-        "对主角态度": {
-          "default": "蔑视",
-          "type": "string"
-        },
-        "好感度": {
-          "default": 25,
-          "type": "number"
-        },
-        "最近检定": {
-          "default": {
-            "类型": "",
-            "结果": "",
-            "是否成功": false
-          },
-          "type": "object",
-          "properties": {
-            "类型": {
-              "type": "string"
-            },
-            "结果": {
-              "type": "string"
-            },
-            "是否成功": {
-              "type": "boolean"
-            }
-          },
-          "required": [
-            "类型",
-            "结果",
-            "是否成功"
-          ]
-        },
-        "外貌与服装": {
-          "type": "string"
-        },
-        "内心想法": {
-          "type": "string"
-        },
-        "已装备": {
-          "default": {},
-          "type": "object",
-          "propertyNames": {
-            "type": "string"
-          },
-          "additionalProperties": {
-            "type": "string"
-          }
-        },
-        "物品栏": {
-          "default": {},
-          "type": "object",
-          "propertyNames": {
-            "type": "string"
-          },
-          "additionalProperties": {
-            "type": "object",
-            "properties": {
-              "描述": {
-                "type": "string"
-              },
-              "数量": {
-                "type": "number"
-              },
-              "品级": {
-                "$ref": "#/$defs/__schema1"
-              }
-            },
-            "required": [
-              "描述",
-              "数量"
-            ]
-          }
-        }
-      }
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": true
+    },
+    "新队友默认": {
+      "$ref": "#/$defs/__schema7"
     },
     "屠妇": {
       "default": {},
@@ -619,7 +743,413 @@
       ]
     },
     "__schema2": {
+      "type": "object",
+      "properties": {
+        "名称": {
+          "type": "string"
+        },
+        "类型": {
+          "type": "string",
+          "enum": [
+            "装备",
+            "道具"
+          ]
+        },
+        "品级": {
+          "$ref": "#/$defs/__schema1"
+        },
+        "描述": {
+          "type": "string"
+        },
+        "装备子类型": {
+          "type": "string",
+          "enum": [
+            "武器",
+            "防具",
+            "饰物"
+          ]
+        },
+        "可装备部位": {
+          "type": "string"
+        },
+        "词条": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "伤害骰": {
+          "type": "string"
+        },
+        "攻击力": {
+          "type": "number"
+        },
+        "固定伤害": {
+          "type": "number"
+        },
+        "防御": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "名称",
+        "类型"
+      ]
+    },
+    "__schema3": {
       "type": "string"
+    },
+    "__schema4": {
+      "type": "object",
+      "properties": {
+        "名称": {
+          "type": "string"
+        },
+        "解锁等级": {
+          "type": "number"
+        },
+        "伤害倍率": {
+          "type": "number"
+        },
+        "技能类型": {
+          "type": "string",
+          "enum": [
+            "主动",
+            "被动"
+          ]
+        },
+        "描述": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "名称",
+        "解锁等级",
+        "伤害倍率",
+        "描述"
+      ]
+    },
+    "__schema5": {
+      "type": "string"
+    },
+    "__schema6": {
+      "type": "string"
+    },
+    "__schema7": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "种族": {
+          "default": "改造体",
+          "type": "string"
+        },
+        "职业": {
+          "type": "string"
+        },
+        "等级": {
+          "default": 30,
+          "type": "number"
+        },
+        "经验值": {
+          "default": 43500,
+          "type": "number"
+        },
+        "当前HP": {
+          "default": 130,
+          "type": "number"
+        },
+        "最大HP": {
+          "default": 130,
+          "type": "number"
+        },
+        "能力值": {
+          "default": {
+            "力量": 14,
+            "敏捷": 14,
+            "体质": 12,
+            "智力": 12,
+            "感知": 13,
+            "魅力": 16
+          },
+          "$ref": "#/$defs/__schema0"
+        },
+        "威慑值": {
+          "default": 85,
+          "type": "number"
+        },
+        "服从度": {
+          "default": 90,
+          "type": "number"
+        },
+        "理智": {
+          "default": 45,
+          "type": "number"
+        },
+        "当前状态": {
+          "default": "巡视",
+          "type": "string"
+        },
+        "兴奋度": {
+          "type": "number"
+        },
+        "对主角态度": {
+          "default": "蔑视",
+          "type": "string"
+        },
+        "好感度": {
+          "default": 25,
+          "type": "number"
+        },
+        "最近检定": {
+          "default": {
+            "类型": "",
+            "结果": "",
+            "是否成功": false
+          },
+          "type": "object",
+          "properties": {
+            "类型": {
+              "type": "string"
+            },
+            "结果": {
+              "type": "string"
+            },
+            "是否成功": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "类型",
+            "结果",
+            "是否成功"
+          ]
+        },
+        "外貌与服装": {
+          "type": "string"
+        },
+        "内心想法": {
+          "type": "string"
+        },
+        "已装备": {
+          "default": {},
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "武器": {
+          "default": {
+            "名称": "寂静M4A1消音步枪",
+            "加成": "力量+3 感知+3",
+            "品级": "史诗",
+            "装备部位": "主手",
+            "基础攻击": "17-24",
+            "伤害骰": "3D8",
+            "效果": [
+              {
+                "名称": "精准赋能",
+                "描述": "精准射击时伤害加成。"
+              },
+              {
+                "名称": "暗影匿踪",
+                "描述": "潜行时降低被察觉概率。"
+              },
+              {
+                "名称": "致命锁定",
+                "描述": "连续命中后目标受到额外伤害。"
+              }
+            ],
+            "描述": "潜行杀器,寂静 M4A1弹无虚发。"
+          },
+          "type": "object",
+          "properties": {
+            "名称": {
+              "type": "string"
+            },
+            "加成": {
+              "type": "string"
+            },
+            "品级": {
+              "type": "string"
+            },
+            "装备部位": {
+              "type": "string"
+            },
+            "基础攻击": {
+              "type": "string"
+            },
+            "伤害骰": {
+              "type": "string"
+            },
+            "效果": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "名称": {
+                    "type": "string"
+                  },
+                  "描述": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "名称",
+                  "描述"
+                ]
+              }
+            },
+            "描述": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "名称"
+          ]
+        },
+        "躯干": {
+          "default": {
+            "名称": "性感COS警察制服",
+            "加成": "魅力+5",
+            "品级": "神器",
+            "装备部位": "躯干",
+            "基础防御": "12",
+            "效果": [
+              {
+                "名称": "执法威仪",
+                "描述": "执法时威慑力提升。"
+              },
+              {
+                "名称": "正义庇护",
+                "描述": "以魅惑与威严守护秩序。"
+              }
+            ],
+            "描述": "霓虹假面,以魅惑与威严守护都市秩序。"
+          },
+          "type": "object",
+          "properties": {
+            "名称": {
+              "type": "string"
+            },
+            "加成": {
+              "type": "string"
+            },
+            "品级": {
+              "type": "string"
+            },
+            "装备部位": {
+              "type": "string"
+            },
+            "基础防御": {
+              "type": "string"
+            },
+            "效果": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "名称": {
+                    "type": "string"
+                  },
+                  "描述": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "名称",
+                  "描述"
+                ]
+              }
+            },
+            "描述": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "名称"
+          ]
+        },
+        "护甲": {
+          "type": "object",
+          "properties": {
+            "名称": {
+              "type": "string"
+            },
+            "加成": {
+              "type": "string"
+            },
+            "品级": {
+              "type": "string"
+            },
+            "装备部位": {
+              "type": "string"
+            },
+            "基础防御": {
+              "type": "string"
+            },
+            "效果": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "名称": {
+                    "type": "string"
+                  },
+                  "描述": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "名称",
+                  "描述"
+                ]
+              }
+            },
+            "描述": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "名称"
+          ]
+        },
+        "技能": {
+          "default": "爆头一击",
+          "type": "string"
+        },
+        "奥义": {
+          "default": "枪花乱舞",
+          "type": "string"
+        },
+        "物品栏": {
+          "default": {},
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "描述": {
+                "type": "string"
+              },
+              "数量": {
+                "type": "number"
+              },
+              "品级": {
+                "$ref": "#/$defs/__schema1"
+              }
+            },
+            "required": [
+              "描述",
+              "数量"
+            ]
+          }
+        }
+      }
     }
   }
 }

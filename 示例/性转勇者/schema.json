@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "主角": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "能力值": {
+          "default": {
+            "力量": 14,
+            "敏捷": 16,
+            "体质": 14,
+            "智力": 10,
+            "感知": 12,
+            "魅力": 8
+          },
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "enum": [
+              "力量",
+              "敏捷",
+              "体质",
+              "智力",
+              "感知",
+              "魅力"
+            ]
+          },
+          "additionalProperties": {
+            "type": "number"
+          },
+          "required": [
+            "力量",
+            "敏捷",
+            "体质",
+            "智力",
+            "感知",
+            "魅力"
+          ]
+        },
+        "经验值": {
+          "type": "number"
+        },
+        "等级": {
+          "default": 1,
+          "type": "number"
+        },
+        "当前HP": {
+          "default": 12,
+          "type": "number"
+        },
+        "最大HP": {
+          "default": 12,
+          "type": "number"
+        },
+        "熟练加值": {
+          "type": "number"
+        },
+        "状态效果": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "最近检定": {
+          "default": {
+            "类型": "",
+            "结果": "",
+            "是否成功": false
+          },
+          "type": "object",
+          "properties": {
+            "类型": {
+              "type": "string"
+            },
+            "结果": {
+              "type": "string"
+            },
+            "是否成功": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "类型",
+            "结果",
+            "是否成功"
+          ]
+        }
+      }
+    }
+  }
+}
