@@ -1,6 +1,12 @@
 const Percent = z.coerce.number().transform((value) => _.clamp(value, 0, 100));
 const NonNegative = z.coerce.number().transform((value) => Math.max(0, value));
 const Positive = z.coerce.number().transform((value) => Math.max(1, value));
+const ThreatSchema = z.preprocess((value) => {
+  if (value === '\u4F4E') return 'I';
+  if (value === '\u4E2D') return 'II';
+  if (value === '\u9AD8') return 'III';
+  return value;
+}, z.enum(['I', 'II', 'III', 'IV', 'V', 'VI']));
 
 const EncounterOptionSchema = z.object({
   label: z.string().default('观察情况'),
@@ -19,7 +25,7 @@ const QuestSchema = z.object({
 const EnemySchema = z.object({
   name: z.string().default('无'),
   category: z.string().default('无'),
-  threat: z.enum(['I', 'II', 'III', 'IV', 'V', 'VI']).default('I'),
+  threat: ThreatSchema.default('I'),
   level: Positive.default(1),
   hp: NonNegative.default(0),
   maxHp: Positive.default(1),
