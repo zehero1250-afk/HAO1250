@@ -244,6 +244,7 @@
       - 规则优先级：部位基础值 > 品级修正 > 词条附加值 > 特殊 notes。
       - 每件装备的数值写入 equipmentMeta.对应槽位。
       - 全身合计后的装备收益写入 equipmentBonus。
+      - 初始装备也视为正式装备，不可只保留名称；若旧存档缺失详情，必须按默认模板补齐 summary、flavor、effects 与基础数值。
     自动映射示例:
       - "攻击力提升 +2" -> equipmentMeta.mainWeapon.atk = 2，并累加到 equipmentBonus.atk
       - "暴击率 +1%" -> equipmentMeta.accessory1.crit = 1，并累加到 equipmentBonus.crit

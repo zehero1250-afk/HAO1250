@@ -6,6 +6,7 @@
     "watch": "webpack --mode development --watch --progress",
     "serve:dist": "node scripts/serve-dist-cors.js",
     "ship": "node scripts/ship.mjs",
+    "statusbar:url": "node scripts/print-wasteland-statusbar-url.mjs",
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,css,scss,html,vue}\" --no-error-on-unmatched-pattern",
     "lint": "eslint",
     "lint:fix": "eslint --fix",

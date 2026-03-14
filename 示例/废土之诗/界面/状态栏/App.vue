@@ -1,5 +1,5 @@
 <template>
-  <div class="hud" v-if="data">
+  <div v-if="data" class="hud">
     <section class="hero-card">
       <div class="hero-main">
         <div>
@@ -12,7 +12,7 @@
         <div class="chips">
           <span class="chip">{{ data.world.exploration }}</span>
           <span class="chip danger">危险 {{ data.world.danger }}</span>
-          <span class="chip" v-if="data.combat.inBattle">Round {{ data.combat.round }}</span>
+          <span v-if="data.combat.inBattle" class="chip">Round {{ data.combat.round }}</span>
         </div>
       </div>
 
@@ -51,9 +51,9 @@
           <span>基础ATK {{ data.player.baseStats?.atk ?? data.player.atk }}</span>
           <span>装备+ {{ data.equipmentBonus?.atk ?? 0 }} / {{ data.equipmentBonus?.def ?? 0 }}</span>
           <span>生命+ {{ data.equipmentBonus?.maxHp ?? 0 }}</span>
-          <span>词条 {{ (data.equipmentBonus?.notes || []).length }}</span>
+          <span>词条 {{ bonusNotes.length }}</span>
         </div>
-        <div class="enemy" v-if="data.combat.inBattle">
+        <div v-if="data.combat.inBattle" class="enemy">
           <div class="enemy-head">
             <strong>{{ data.combat.enemy.name }}</strong>
             <span>{{ data.combat.enemy.category }} | 威胁 {{ data.combat.enemy.threat }}</span>
@@ -125,22 +125,22 @@
             <div>
               <p class="detail-kicker">{{ selectedDetail.kindLabel }} | {{ selectedDetail.slotOrCategory }}</p>
               <h3>{{ selectedDetail.name }}</h3>
-              <p class="hint" v-if="selectedDetail.grade">{{ selectedDetail.grade }}</p>
+              <p v-if="selectedDetail.grade" class="hint">{{ selectedDetail.grade }}</p>
             </div>
             <button type="button" class="close-button" @click.stop.prevent="closeDetail">关闭</button>
           </div>
 
           <p class="detail-summary">{{ selectedDetail.summary }}</p>
-          <p class="detail-flavor" v-if="selectedDetail.flavor">{{ selectedDetail.flavor }}</p>
+          <p v-if="selectedDetail.flavor" class="detail-flavor">{{ selectedDetail.flavor }}</p>
 
-          <div class="detail-stats" v-if="selectedDetail.stats.length">
+          <div v-if="selectedDetail.stats.length" class="detail-stats">
             <div v-for="stat in selectedDetail.stats" :key="stat.label" class="detail-stat">
               <span>{{ stat.label }}</span>
               <strong>{{ stat.value }}</strong>
             </div>
           </div>
 
-          <div class="effects-block" v-if="selectedDetail.effects.length">
+          <div v-if="selectedDetail.effects.length" class="effects-block">
             <h4>效果词条</h4>
             <div class="effects-list">
               <div v-for="effect in selectedDetail.effects" :key="effect.name" class="effect-card">
@@ -150,7 +150,7 @@
             </div>
           </div>
 
-          <div class="effects-block" v-if="selectedDetail.kind === 'equipment' && bonusNotes.length">
+          <div v-if="selectedDetail.kind === 'equipment' && bonusNotes.length" class="effects-block">
             <h4>当前装备总加成摘要</h4>
             <div class="effects-list compact">
               <div v-for="note in bonusNotes" :key="note" class="effect-card">
@@ -171,6 +171,20 @@ import { useDataStore } from './store';
 type EffectItem = {
   name: string;
   description: string;
+};
+
+type ItemMetaSource = {
+  slot?: string;
+  category?: string;
+  grade?: string;
+  summary?: string;
+  flavor?: string;
+  maxHp?: number;
+  atk?: number;
+  def?: number;
+  speed?: number;
+  crit?: number;
+  effects?: EffectItem[];
 };
 
 type DetailEntry = {
@@ -210,6 +224,102 @@ const supplyLabels = {
   gold: '金币',
 } as const;
 
+const equipmentFallbackMeta: Record<string, ItemMetaSource> = {
+  锈迹手枪: {
+    slot: '主武器',
+    grade: '普通',
+    summary: '用旧船零件和废弃击发件拼出来的手枪，膛线磨损明显，但近距离仍有足够威慑力。',
+    flavor: '枪身带着海风和铁锈味，握把边缘被反复打磨过，留下陈春璃自己修整的痕迹。',
+    atk: 2,
+    crit: 1,
+    effects: [{ name: '粗糙膛线', description: '近距离射击时更容易打出致命命中，但连续射击稳定性一般。' }],
+  },
+  应急短刀: {
+    slot: '副武器',
+    grade: '普通',
+    summary: '从旧船厨房和维修间拼出的应急短刀，适合贴身防卫和切割杂物。',
+    flavor: '刀脊磨得很亮，刃口带着被反复修补的细纹，像废土里最朴素的求生工具。',
+    atk: 1,
+    speed: 1,
+    effects: [{ name: '贴身防卫', description: '敌人近身时更容易快速反击，适合近距离补刀。' }],
+  },
+  破布头巾: {
+    slot: '头部',
+    grade: '普通',
+    summary: '用旧布条缠成的头巾，挡不住重击，但能稍微缓冲风沙和碎屑。',
+    flavor: '褪色布料吸饱了海盐和日晒味，边角缝线粗糙却很耐用。',
+    def: 1,
+    effects: [{ name: '碎屑缓冲', description: '面对轻微擦伤和飞溅碎片时，能减少一些干扰。' }],
+  },
+  废铁拼接护甲: {
+    slot: '躯干',
+    grade: '精制',
+    summary: '由废船钢板和皮带拼接而成的胸甲，沉重但结实，是村民里少有的正经防具。',
+    flavor: '钢片之间能看到反复铆接和补丁的痕迹，撞上去会发出闷响，像一身勉强撑起的安全感。',
+    maxHp: 4,
+    def: 1,
+    effects: [{ name: '冲击削减', description: '受击时能吸收一部分正面冲击，提升生存余量。' }],
+  },
+  磨损手套: {
+    slot: '手部',
+    grade: '普通',
+    summary: '掌心磨得起毛的旧手套，能保护双手，也让换弹和拆装更顺手。',
+    flavor: '皮革边缘发硬开裂，却仍保留着长期使用后的贴手感。',
+    speed: 1,
+    effects: [{ name: '熟手触感', description: '换弹、拆装与抓握动作更稳定，减少细小失误。' }],
+  },
+  旧工装裤: {
+    slot: '腿部',
+    grade: '普通',
+    summary: '结实耐磨的旧工装裤，方便在废船和礁滩之间快速活动。',
+    flavor: '膝盖位置缝过几次补丁，裤脚沾着长期行走后的泥与盐。',
+    speed: 1,
+    effects: [{ name: '灵活移动', description: '在复杂地形中行动更利索，短距离腾挪更轻快。' }],
+  },
+  旧世界指南针: {
+    slot: '饰品1',
+    grade: '精制',
+    summary: '旧时代留下的黄铜指南针，指针偶尔发飘，但在荒地里依旧很珍贵。',
+    flavor: '金属盖板上布满细密划痕，打开时会发出轻轻一声脆响。',
+    crit: 1,
+    effects: [{ name: '方位校准', description: '保持方向感与判断力，在关键出手时更容易抓住时机。' }],
+  },
+  空: {
+    slot: '饰品2',
+    grade: '无',
+    summary: '这个装备栏当前没有放入任何物品。',
+    flavor: '空着的卡槽提醒着你，未来还有很多可以拾荒和升级的空间。',
+    effects: [],
+  },
+};
+
+const supplyFallbackMeta: Record<string, ItemMetaSource> = {
+  ammo: {
+    category: '补给',
+    summary: '手枪弹药与临时装填子弹的总量，决定你能持续开火多久。',
+    flavor: '每一发都来之不易，火药、弹壳和底火都带着废土里的稀缺意味。',
+    effects: [{ name: '射击消耗', description: '远程攻击会持续消耗子弹，战斗后需要及时补充。' }],
+  },
+  medkit: {
+    category: '医疗',
+    summary: '基础医疗包，内含止血和包扎材料，用于战后应急恢复。',
+    flavor: '药味很淡，绷带却被收拾得很整齐，显然是被人仔细节省着使用。',
+    effects: [{ name: '应急处理', description: '可用于缓解受伤状态，稳定战后生命值。' }],
+  },
+  scrap: {
+    category: '材料',
+    summary: '来自废船、零件和损坏器件的废料，是制作与修补的基础资源。',
+    flavor: '铁片、电缆、铆钉混杂在一起，看似零碎，却是废土里最实在的财富。',
+    effects: [{ name: '制作素材', description: '可用于修理装备、制作武器和完成部分委托。' }],
+  },
+  gold: {
+    category: '货币',
+    summary: '流通用货币，可在聚落、猎人协会和商人之间交换补给或情报。',
+    flavor: '在废土上，金币不仅是购买力，也是行动的底气。',
+    effects: [{ name: '交易资源', description: '用于购买装备、补给、弹药和任务服务。' }],
+  },
+};
+
 function percent(current: number, max: number) {
   if (!max) return '0%';
   return `${Math.max(0, Math.min(100, (current / max) * 100))}%`;
@@ -233,12 +343,30 @@ function collectStats(source: Record<string, unknown> | undefined) {
     }));
 }
 
+function mergeMeta(primary: ItemMetaSource | undefined, fallback: ItemMetaSource | undefined): ItemMetaSource {
+  return {
+    slot: primary?.slot || fallback?.slot || '',
+    category: primary?.category || fallback?.category || '',
+    grade: primary?.grade || fallback?.grade || '',
+    summary: primary?.summary || fallback?.summary || '',
+    flavor: primary?.flavor || fallback?.flavor || '',
+    maxHp: Number(primary?.maxHp || fallback?.maxHp || 0),
+    atk: Number(primary?.atk || fallback?.atk || 0),
+    def: Number(primary?.def || fallback?.def || 0),
+    speed: Number(primary?.speed || fallback?.speed || 0),
+    crit: Number(primary?.crit || fallback?.crit || 0),
+    effects:
+      (Array.isArray(primary?.effects) && primary.effects.length ? primary.effects : undefined) ||
+      (Array.isArray(fallback?.effects) ? fallback.effects : []),
+  };
+}
+
 const equipmentEntries = computed<DetailEntry[]>(() => {
   if (!data.value) return [];
 
   return Object.entries(equipmentLabels).map(([key, label]) => {
     const name = data.value.equipment?.[key] || '空';
-    const meta = data.value.equipmentMeta?.[key] || {};
+    const meta = mergeMeta(data.value.equipmentMeta?.[key], equipmentFallbackMeta[name]);
 
     return {
       key,
@@ -260,7 +388,7 @@ const supplyEntries = computed<DetailEntry[]>(() => {
   if (!data.value) return [];
 
   return Object.entries(supplyLabels).map(([key, label]) => {
-    const meta = data.value.supplyMeta?.[key] || {};
+    const meta = mergeMeta(data.value.supplyMeta?.[key], supplyFallbackMeta[key]);
     const value = data.value.player?.[key] ?? 0;
 
     return {
@@ -268,7 +396,7 @@ const supplyEntries = computed<DetailEntry[]>(() => {
       kind: 'supply',
       kindLabel: '道具',
       label,
-      name: meta.name || label,
+      name: data.value.supplyMeta?.[key]?.name || label,
       value,
       slotOrCategory: meta.category || '补给',
       summary: meta.summary || `${label} 当前暂无详细描述。`,
@@ -303,7 +431,6 @@ function closeDetail() {
   --teal: #59d8c6;
   --amber: #ffb36b;
   --danger: #ff9a62;
-
   position: relative;
   overflow: hidden;
   font-family: 'Bahnschrift', 'Segoe UI', 'Microsoft YaHei', sans-serif;

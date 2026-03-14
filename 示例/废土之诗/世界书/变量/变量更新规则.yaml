@@ -122,6 +122,8 @@
       - 若装备文本里有“攻击/防御/速度/暴击/生命”类词条，必须拆解成数值更新。
       - 单件装备的数值进入 equipmentMeta.槽位；全身汇总进入 equipmentBonus。
       - 若仅有描述性特效，则至少写入 equipmentMeta.槽位.effects，并在 equipmentBonus.notes 留摘要。
+      - 若当前存档里装备栏已有初始装备名称，但 equipmentMeta 对应槽位缺少 summary、flavor、effects 或数值，则必须按初始装备默认模板补齐，不得让装备详情长期为空壳。
+      - 旧存档首次读到新版规则时，可直接把锈迹手枪、应急短刀、破布头巾、废铁拼接护甲、磨损手套、旧工装裤、旧世界指南针等初始装备补齐到 equipmentMeta。
 
   七_角色口吻约束:
     雅各布与李泰:
