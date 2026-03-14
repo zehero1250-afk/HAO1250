@@ -121,42 +121,53 @@
     <Teleport to="body">
       <div v-if="selectedDetail" class="detail-backdrop" @click.self="closeDetail">
         <article class="detail-modal" @click.stop>
-          <div class="detail-head">
-            <div>
-              <p class="detail-kicker">{{ selectedDetail.kindLabel }} | {{ selectedDetail.slotOrCategory }}</p>
-              <h3>{{ selectedDetail.name }}</h3>
-              <p v-if="selectedDetail.grade" class="hint">{{ selectedDetail.grade }}</p>
-            </div>
-            <button type="button" class="close-button" @click.stop.prevent="closeDetail">关闭</button>
-          </div>
-
-          <p class="detail-summary">{{ selectedDetail.summary }}</p>
-          <p v-if="selectedDetail.flavor" class="detail-flavor">{{ selectedDetail.flavor }}</p>
-
-          <div v-if="selectedDetail.stats.length" class="detail-stats">
-            <div v-for="stat in selectedDetail.stats" :key="stat.label" class="detail-stat">
-              <span>{{ stat.label }}</span>
-              <strong>{{ stat.value }}</strong>
-            </div>
-          </div>
-
-          <div v-if="selectedDetail.effects.length" class="effects-block">
-            <h4>效果词条</h4>
-            <div class="effects-list">
-              <div v-for="effect in selectedDetail.effects" :key="effect.name" class="effect-card">
-                <strong>{{ effect.name }}</strong>
-                <p>{{ effect.description }}</p>
+          <div class="detail-shell">
+            <header class="detail-head">
+              <div class="detail-header-copy">
+                <p class="detail-kicker">{{ selectedDetail.kindLabel }} | {{ selectedDetail.slotOrCategory }}</p>
+                <div class="detail-title-row">
+                  <h3 :class="['detail-title', gradeClass(selectedDetail.grade)]">{{ selectedDetail.name }}</h3>
+                  <span v-if="selectedDetail.grade" :class="['detail-grade', gradeClass(selectedDetail.grade)]">
+                    {{ selectedDetail.grade }}
+                  </span>
+                </div>
               </div>
-            </div>
-          </div>
+              <button type="button" class="close-button" @click.stop.prevent="closeDetail">关闭</button>
+            </header>
 
-          <div v-if="selectedDetail.kind === 'equipment' && bonusNotes.length" class="effects-block">
-            <h4>当前装备总加成摘要</h4>
-            <div class="effects-list compact">
-              <div v-for="note in bonusNotes" :key="note" class="effect-card">
-                <p>{{ note }}</p>
+            <section class="detail-block">
+              <p class="detail-summary">{{ selectedDetail.summary }}</p>
+              <p v-if="selectedDetail.flavor" class="detail-flavor">{{ selectedDetail.flavor }}</p>
+            </section>
+
+            <section v-if="selectedDetail.stats.length" class="detail-block">
+              <p class="detail-section-label">基础属性</p>
+              <div class="detail-stats">
+                <div v-for="stat in selectedDetail.stats" :key="stat.label" class="detail-stat">
+                  <span>{{ stat.label }}</span>
+                  <strong>{{ stat.value }}</strong>
+                </div>
               </div>
-            </div>
+            </section>
+
+            <section v-if="selectedDetail.effects.length" class="detail-block">
+              <p class="detail-section-label">效果词条</p>
+              <div class="effects-list">
+                <div v-for="effect in selectedDetail.effects" :key="effect.name" class="effect-card">
+                  <strong>{{ effect.name }}</strong>
+                  <p>{{ effect.description }}</p>
+                </div>
+              </div>
+            </section>
+
+            <section v-if="selectedDetail.kind === 'equipment' && bonusNotes.length" class="detail-block">
+              <p class="detail-section-label">当前装备总加成摘要</p>
+              <div class="effects-list compact">
+                <div v-for="note in bonusNotes" :key="note" class="effect-card">
+                  <p>{{ note }}</p>
+                </div>
+              </div>
+            </section>
           </div>
         </article>
       </div>
@@ -361,6 +372,21 @@ function mergeMeta(primary: ItemMetaSource | undefined, fallback: ItemMetaSource
   };
 }
 
+function normalizeGrade(grade?: string) {
+  const text = (grade || '').trim();
+  if (!text) return 'normal';
+  if (text.includes('传说')) return 'legendary';
+  if (text.includes('史诗')) return 'epic';
+  if (text.includes('稀有')) return 'rare';
+  if (text.includes('精品') || text.includes('精制')) return 'fine';
+  if (text.includes('普通')) return 'normal';
+  return 'normal';
+}
+
+function gradeClass(grade?: string) {
+  return `grade-${normalizeGrade(grade)}`;
+}
+
 const equipmentEntries = computed<DetailEntry[]>(() => {
   if (!data.value) return [];
 
@@ -399,6 +425,7 @@ const supplyEntries = computed<DetailEntry[]>(() => {
       name: data.value.supplyMeta?.[key]?.name || label,
       value,
       slotOrCategory: meta.category || '补给',
+      grade: '',
       summary: meta.summary || `${label} 当前暂无详细描述。`,
       flavor: meta.flavor || '',
       stats: [{ label: '持有', value: String(value) }],
@@ -426,6 +453,7 @@ function closeDetail() {
   --line: rgba(131, 194, 234, 0.24);
   --line-strong: rgba(160, 228, 255, 0.45);
   --text-main: #eaf6ff;
+  --text-soft: #c7d8e5;
   --text-sub: #93aabc;
   --cyan: #78d8ff;
   --teal: #59d8c6;
@@ -681,12 +709,88 @@ h4 {
 }
 
 .detail-modal {
-  width: min(560px, 100%);
-  max-height: min(78vh, 720px);
+  width: min(620px, 100%);
+  max-height: min(82vh, 760px);
   overflow: auto;
+  padding: 0;
   box-shadow:
     0 24px 60px rgba(0, 0, 0, 0.38),
     inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+.detail-shell {
+  display: grid;
+  gap: 18px;
+  padding: 22px 22px 20px;
+}
+
+.detail-head {
+  align-items: flex-start;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(120, 216, 255, 0.12);
+}
+
+.detail-header-copy {
+  display: grid;
+  gap: 10px;
+}
+
+.detail-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.detail-title {
+  font-size: 30px;
+  line-height: 1;
+  color: var(--text-main);
+  text-shadow: 0 0 18px rgba(120, 216, 255, 0.12);
+}
+
+.detail-grade {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  background: rgba(255, 255, 255, 0.02);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+}
+
+.grade-normal {
+  color: #d9e6ee;
+}
+
+.grade-fine {
+  color: #69dbb5;
+}
+
+.grade-rare {
+  color: #79b8ff;
+}
+
+.grade-epic {
+  color: #c99bff;
+}
+
+.grade-legendary {
+  color: #ffbf6b;
+}
+
+.detail-block {
+  display: grid;
+  gap: 10px;
+}
+
+.detail-section-label {
+  margin: 0;
+  color: #8eb1c7;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
 .close-button {
@@ -695,20 +799,29 @@ h4 {
   background: rgba(120, 216, 255, 0.08);
   color: var(--text-main);
   border-radius: 999px;
-  padding: 6px 12px;
+  padding: 10px 16px;
   cursor: pointer;
 }
 
-.detail-summary {
-  margin: 14px 0 8px;
-  line-height: 1.6;
+.detail-summary,
+.detail-flavor,
+.effect-card p,
+.effect-card strong,
+.detail-stat span,
+.detail-stat strong {
   color: var(--text-main);
 }
 
+.detail-summary {
+  margin: 0;
+  line-height: 1.8;
+  font-size: 16px;
+}
+
 .detail-flavor {
-  margin: 0 0 14px;
-  line-height: 1.6;
-  color: #a7c0cf;
+  margin: 0;
+  line-height: 1.75;
+  color: var(--text-soft);
 }
 
 .effects-block + .effects-block {
@@ -718,22 +831,22 @@ h4 {
 .effect-card {
   flex: 1 1 220px;
   min-width: 180px;
-  padding: 10px;
+  padding: 14px;
   border-radius: 10px;
   border: 1px solid rgba(136, 193, 227, 0.16);
-  background: rgba(9, 18, 28, 0.84);
+  background: linear-gradient(180deg, rgba(11, 21, 33, 0.98), rgba(8, 16, 25, 0.96));
 }
 
 .effect-card strong {
   display: block;
-  margin-bottom: 4px;
-  color: #d8f3ff;
+  margin-bottom: 8px;
+  font-size: 18px;
 }
 
 .effect-card p {
   margin: 0;
-  line-height: 1.55;
-  color: var(--text-sub);
+  line-height: 1.7;
+  color: var(--text-soft);
 }
 
 .effects-list.compact .effect-card {
@@ -752,8 +865,12 @@ h4 {
     flex-direction: column;
   }
 
-  .detail-modal {
-    max-height: 82vh;
+  .detail-shell {
+    padding: 18px;
+  }
+
+  .detail-title {
+    font-size: 26px;
   }
 }
 </style>
