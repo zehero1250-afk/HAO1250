@@ -119,7 +119,16 @@
     </section>
 
     <Teleport to="body">
-      <div v-if="selectedDetail" class="detail-backdrop" @click.self="closeDetail">
+      <div
+        v-if="selectedDetail"
+        class="detail-backdrop"
+        :style="{
+          '--text-main': '#eaf6ff',
+          '--text-soft': '#c7d8e5',
+          '--text-sub': '#93aabc',
+        }"
+        @click.self="closeDetail"
+      >
         <article class="detail-modal" @click.stop>
           <div class="detail-shell">
             <header class="detail-head">
@@ -135,7 +144,7 @@
               <button
                 type="button"
                 class="close-button"
-                :style="{ color: 'var(--text-main)' }"
+                style="color: #eaf6ff !important; -webkit-text-fill-color: #eaf6ff;"
                 @click.stop.prevent="closeDetail"
               >
                 关闭
@@ -143,8 +152,17 @@
             </header>
 
             <section class="detail-block">
-              <p class="detail-summary" :style="{ color: 'var(--text-main)' }">{{ selectedDetail.summary }}</p>
-              <p v-if="selectedDetail.flavor" class="detail-flavor" :style="{ color: 'var(--text-soft)' }">
+              <p
+                class="detail-summary"
+                style="color: #eaf6ff !important; -webkit-text-fill-color: #eaf6ff;"
+              >
+                {{ selectedDetail.summary }}
+              </p>
+              <p
+                v-if="selectedDetail.flavor"
+                class="detail-flavor"
+                style="color: #c7d8e5 !important; -webkit-text-fill-color: #c7d8e5;"
+              >
                 {{ selectedDetail.flavor }}
               </p>
             </section>
@@ -163,8 +181,12 @@
               <p class="detail-section-label">效果词条</p>
               <div class="effects-list">
                 <div v-for="effect in selectedDetail.effects" :key="effect.name" class="effect-card">
-                  <strong :style="{ color: 'var(--text-main)' }">{{ effect.name }}</strong>
-                  <p :style="{ color: 'var(--text-soft)' }">{{ effect.description }}</p>
+                  <strong style="color: #eaf6ff !important; -webkit-text-fill-color: #eaf6ff;">
+                    {{ effect.name }}
+                  </strong>
+                  <p style="color: #c7d8e5 !important; -webkit-text-fill-color: #c7d8e5;">
+                    {{ effect.description }}
+                  </p>
                 </div>
               </div>
             </section>
@@ -173,7 +195,9 @@
               <p class="detail-section-label">当前装备总加成摘要</p>
               <div class="effects-list compact">
                 <div v-for="note in bonusNotes" :key="note" class="effect-card">
-                  <p :style="{ color: 'var(--text-soft)' }">{{ note }}</p>
+                  <p style="color: #c7d8e5 !important; -webkit-text-fill-color: #c7d8e5;">
+                    {{ note }}
+                  </p>
                 </div>
               </div>
             </section>
