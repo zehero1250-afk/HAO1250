@@ -18,6 +18,11 @@ if (!fs.existsSync(src)) {
 const html = fs.readFileSync(src, 'utf-8');
 const wrapped = '```html\n' + html + '\n```';
 
-fs.mkdirSync(path.dirname(dest), { recursive: true });
-fs.writeFileSync(dest, wrapped, 'utf-8');
-console.info('copy-statusbar-to-regex: 已更新 示例/黄晓林角色卡/正则/[界面]黄晓林DnD状态栏.txt（含 ``` 包裹）');
+try {
+  fs.mkdirSync(path.dirname(dest), { recursive: true });
+  fs.writeFileSync(dest, wrapped, 'utf-8');
+  console.info('copy-statusbar-to-regex: 已更新 示例/黄晓林角色卡/正则/[界面]黄晓林DnD状态栏.txt（含 ``` 包裹）');
+} catch (error) {
+  console.warn('copy-statusbar-to-regex: 写入失败，已跳过，不影响本次构建。');
+  console.warn(error?.message || error);
+}
