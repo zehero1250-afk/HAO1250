@@ -11,6 +11,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, '..');
 const wastelandDir = path.join(root, '示例', '废土之诗');
 const worldbookDir = path.join(wastelandDir, '世界书');
+const STATUSBAR_VERSION = 1;
+const STATUSBAR_URL = `https://cdn.jsdelivr.net/gh/zehero1250-afk/HAO1250@main/dist/%E5%BA%9F%E5%9C%9F%E4%B9%8B%E8%AF%97/%E7%95%8C%E9%9D%A2/%E7%8A%B6%E6%80%81%E6%A0%8F/index.html?v=${STATUSBAR_VERSION}`;
 
 const defaultEntryExtensions = {
   position: 4,
@@ -196,7 +198,7 @@ function main() {
             disabled: false,
             runOnEdit: false,
             findRegex: '<StatusPlaceHolderImpl/>',
-            replaceString: '```html\n<body>\n<script>\n$(\'body\').load(\'https://cdn.jsdelivr.net/gh/zehero1250-afk/HAO1250@1db5968/dist/%E5%BA%9F%E5%9C%9F%E4%B9%8B%E8%AF%97/%E7%95%8C%E9%9D%A2/%E7%8A%B6%E6%80%81%E6%A0%8F/index.html\')\n</script>\n</body>\n```',
+            replaceString: `\`\`\`html\n<body>\n<script>\n$('body').load('${STATUSBAR_URL}')\n</script>\n</body>\n\`\`\``,
             trimStrings: [],
             placement: [2],
             substituteRegex: 0,
