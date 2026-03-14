@@ -378,7 +378,7 @@
         ```html
         <body>
         <script>
-        $('body').load('https://cdn.jsdelivr.net/gh/zehero1250-afk/HAO1250@main/dist/%E5%BA%9F%E5%9C%9F%E4%B9%8B%E8%AF%97/%E7%95%8C%E9%9D%A2/%E7%8A%B6%E6%80%81%E6%A0%8F/index.html')
+        $('body').load('https://cdn.jsdelivr.net/gh/zehero1250-afk/HAO1250@main/dist/%E5%BA%9F%E5%9C%9F%E4%B9%8B%E8%AF%97/%E7%95%8C%E9%9D%A2/%E7%8A%B6%E6%80%81%E6%A0%8F/index.html?v=3')
         </script>
         </body>
         ```
@@ -403,4 +403,4 @@
         启用: true
         类型: 脚本
         内容: |-
-          import 'https://testingcf.jsdelivr.net/gh/StageDog/tavern_helper_template/dist/角色卡名称/脚本/变量结构/index.js';
+          import 'https://cdn.jsdelivr.net/gh/zehero1250-afk/HAO1250@main/dist/%E5%BA%9F%E5%9C%9F%E4%B9%8B%E8%AF%97/%E8%84%9A%E6%9C%AC/%E5%8F%98%E9%87%8F%E7%BB%93%E6%9E%84/index.js';
