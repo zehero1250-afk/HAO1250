@@ -132,12 +132,21 @@
                   </span>
                 </div>
               </div>
-              <button type="button" class="close-button" @click.stop.prevent="closeDetail">关闭</button>
+              <button
+                type="button"
+                class="close-button"
+                :style="{ color: 'var(--text-main)' }"
+                @click.stop.prevent="closeDetail"
+              >
+                关闭
+              </button>
             </header>
 
             <section class="detail-block">
-              <p class="detail-summary">{{ selectedDetail.summary }}</p>
-              <p v-if="selectedDetail.flavor" class="detail-flavor">{{ selectedDetail.flavor }}</p>
+              <p class="detail-summary" :style="{ color: 'var(--text-main)' }">{{ selectedDetail.summary }}</p>
+              <p v-if="selectedDetail.flavor" class="detail-flavor" :style="{ color: 'var(--text-soft)' }">
+                {{ selectedDetail.flavor }}
+              </p>
             </section>
 
             <section v-if="selectedDetail.stats.length" class="detail-block">
@@ -154,8 +163,8 @@
               <p class="detail-section-label">效果词条</p>
               <div class="effects-list">
                 <div v-for="effect in selectedDetail.effects" :key="effect.name" class="effect-card">
-                  <strong>{{ effect.name }}</strong>
-                  <p>{{ effect.description }}</p>
+                  <strong :style="{ color: 'var(--text-main)' }">{{ effect.name }}</strong>
+                  <p :style="{ color: 'var(--text-soft)' }">{{ effect.description }}</p>
                 </div>
               </div>
             </section>
@@ -164,7 +173,7 @@
               <p class="detail-section-label">当前装备总加成摘要</p>
               <div class="effects-list compact">
                 <div v-for="note in bonusNotes" :key="note" class="effect-card">
-                  <p>{{ note }}</p>
+                  <p :style="{ color: 'var(--text-soft)' }">{{ note }}</p>
                 </div>
               </div>
             </section>
