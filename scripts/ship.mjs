@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { execSync } from 'node:child_process';
+import { execSync, spawnSync } from 'node:child_process';
 
 function run(cmd, options = {}) {
   execSync(cmd, { stdio: 'inherit', ...options });
@@ -7,6 +7,19 @@ function run(cmd, options = {}) {
 
 function read(cmd) {
   return execSync(cmd, { encoding: 'utf8' }).trim();
+}
+
+function runCaptured(command, args) {
+  const result = spawnSync(command, args, {
+    cwd: process.cwd(),
+    encoding: 'utf8',
+    shell: false,
+  });
+
+  if (result.stdout) process.stdout.write(result.stdout);
+  if (result.stderr) process.stderr.write(result.stderr);
+
+  return result;
 }
 
 function getTimestamp() {
@@ -37,17 +50,22 @@ function main() {
     try {
       run(`git commit -m "${commitMessage.replaceAll('"', '\\"')}"`);
     } catch {
-      // `git add` 后仍无可提交内容时，继续执行同步流程
       console.log('[ship] 没有可提交的变更，继续同步远端...');
     }
   } else {
     console.log('[ship] 本地无改动，直接同步远端...');
   }
 
-  try {
-    run('git pull --rebase origin main');
-  } catch {
-    console.error('[ship] pull --rebase 失败。请先处理冲突后再执行一次 pnpm ship。');
+  const pullResult = runCaptured('git', ['pull', '--rebase', 'origin', 'main']);
+  if (pullResult.status !== 0) {
+    const combinedOutput = `${pullResult.stdout || ''}\n${pullResult.stderr || ''}`;
+    if (/SSL_read|unexpected eof|Failed to connect|Could not resolve host|Connection timed out/i.test(combinedOutput)) {
+      console.error('[ship] git pull --rebase 因网络或 SSL 中断失败；你的本地提交通常已经成功。网络恢复后直接执行 `git push origin main` 或重新运行 `pnpm ship` 即可。');
+    } else if (/rebase-merge directory|another rebase|Resolve all conflicts|could not apply|CONFLICT/i.test(combinedOutput)) {
+      console.error('[ship] git pull --rebase 遇到 rebase/冲突状态，请先执行 `git status`，再根据提示 `git rebase --continue`、`git rebase --abort` 或处理冲突。');
+    } else {
+      console.error('[ship] git pull --rebase 失败，请先执行 `git status` 查看当前仓库状态。');
+    }
     process.exit(1);
   }
 
