@@ -1,0 +1,21 @@
+脚本名称：任务日志美化（QuestContract）
+
+查找正则表达式：
+/<QuestContract>\s*任务:\s*(.+?)\s*\n委托方:\s*(.+?)\s*\n等级:\s*(.+?)\s*\n简介:\s*(.+?)\s*\n目标:\s*(.+?)\s*\n奖励:\s*(.+?)\s*\n交付:\s*(.+?)\s*\n状态:\s*(.+?)\s*\n下一步:\s*(.+?)\s*(?:\n特图的旁白:\s*(.+?)\s*)?<\/QuestContract>/gi
+
+替换为：
+<div style="margin:10px 0;padding:10px 12px;border:1px solid #ded4c3;border-radius:10px;background:#faf8f2;">
+  <div style="font-weight:700;color:#8d6a19;margin-bottom:8px;letter-spacing:.04em;">QUEST CONTRACT</div>
+  <div style="font-size:14px;font-weight:700;color:#2f3440;margin-bottom:4px;">$1</div>
+  <div style="font-size:12px;color:#666;line-height:1.75;">
+    委托方：$2<br />
+    等级：$3<br />
+    简介：$4<br />
+    目标：$5<br />
+    奖励：$6<br />
+    交付：$7<br />
+    状态：$8<br />
+    下一步：$9
+  </div>
+  <div style="margin-top:6px;font-size:12px;color:#6d7482;">$10</div>
+</div>

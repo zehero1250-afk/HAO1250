@@ -1,0 +1,18 @@
+脚本名称：战利品日志美化（LootLog）
+
+查找正则表达式：
+/<LootLog>\s*来源:\s*(.+?)\s*\n明细:\s*(.+?)\s*\n装备:\s*(.+?)\s*\n金币:\s*(.+?)\s*\n材料:\s*(.+?)\s*\n特殊掉落:\s*(.+?)\s*(?:\n特图的旁白:\s*(.+?)\s*)?<\/LootLog>/gi
+
+替换为：
+<div style="margin:10px 0;padding:10px 12px;border:1px solid #d8dce6;border-radius:10px;background:#f6f8fc;">
+  <div style="font-weight:700;color:#3a4e79;margin-bottom:6px;letter-spacing:.04em;">LOOT LOG</div>
+  <div style="font-size:13px;color:#5d6472;">来源：$1</div>
+  <div style="font-size:13px;color:#5d6472;margin-bottom:6px;">明细：$2</div>
+  <div style="font-size:12px;color:#394055;line-height:1.75;">
+    装备：$3<br />
+    金币：$4<br />
+    材料：$5<br />
+    特殊掉落：$6
+  </div>
+  <div style="margin-top:6px;font-size:12px;color:#6d7482;">$7</div>
+</div>

@@ -1,0 +1,7 @@
+脚本名称：正文美化（简版）
+
+查找正则表达式：
+/<now_plot>\s*([\s\S]*?)\s*<\/now_plot>/gi
+
+替换为：
+<div class="wasteland-chronicle" style="--wc-body-font-size:23px;width:100%;margin:22px 0;padding:0 80px;box-sizing:border-box;font-family:'Noto Serif SC','So 

@@ -1,0 +1,91 @@
+脚本名称：敌人出现状态美化（EnemyOverview）
+查找正则表达式：
+/(?:<EnemyOverview>\s*)?敌人:\s*(.+?)\s*\n标签:\s*(?:Lv\.?\s*([0-9]+)\s*\|\s*)?([^|\n]+?)(?:\s*\|\s*([^\n]+?))?\s*\n状态:\s*HP\s*([^|\n]+?)\s*\|\s*AC\s*([^|\n]+?)\s*\|\s*威胁度[:：]\s*([^\n]+?)\s*\n属性:\s*.*?力量\s*([0-9]+).*?敏捷\s*([0-9]+).*?体质\s*([0-9]+).*?智力\s*([0-9]+).*?感知\s*([0-9]+).*?魅力\s*([0-9]+)\s*\n基本攻击:\s*([^\n]+?)\s*\n技能:\s*([^\n]+?)\s*\n弱点:\s*([^\n]+?)\s*\n抗性:\s*([^\n]+?)\s*\n特征:\s*([^\n]+?)\s*\n特图的旁白:\s*([\s\S]*?)(?:\s*<\/EnemyOverview>)?(?=\n{2,}|$)/gi
+
+替换为：
+<div style="margin:12px 0;padding:0 14px 14px;border-radius:38px;border:1px solid #dfe3ea;background:linear-gradient(180deg,#ffffff 0%,#fafafa 25%,#f5f5f5 50%,#f0f0f0 75%,#e8e8e8 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 3px 10px rgba(20,20,24,.06);font-family:'Noto Serif SC','Source Han Serif SC','Songti SC',serif;color:#4b4b52;overflow:hidden;">
+
+  <div style="position:relative;padding:0 0 12px;">
+    <div style="position:absolute;left:20px;top:18px;width:300px;height:32px;background:repeating-linear-gradient(100deg,#c9cdd4 0 13px,transparent 13px 23px);opacity:.72;z-index:1;"></div>
+    <div style="position:absolute;right:20px;top:18px;width:300px;height:32px;background:repeating-linear-gradient(100deg,#c9cdd4 0 13px,transparent 13px 23px);opacity:.72;z-index:1;"></div>
+    <div style="position:relative;z-index:2;width:max-content;max-width:92%;height:85px;margin:0 auto;padding:0 32px;display:flex;align-items:center;justify-content:center;gap:14px;box-sizing:border-box;border-radius:0 0 28px 28px;background:#6f6f72;color:#ffd718;font-size:36px;font-weight:700;letter-spacing:.06em;line-height:1;font-family:'思源黑体 CN','Source Han Sans SC','Source Han Sans CN','Noto Sans SC',sans-serif;"><span style="font-size:28px;line-height:1;color:#ffd718;">&#9763;</span><span>ENEMY OVERVIEW</span><span style="font-size:28px;line-height:1;color:#ffd718;">&#9763;</span></div>
+  </div>
+
+  <div style="margin-top:20px;padding:8px 20px 10px;">
+    <div style="display:flex;justify-content:center;align-items:center;font-size:39px;line-height:1.1;color:#44444a;font-family:'思源宋体 SC','Source Han Serif SC','Source Han Serif CN','Noto Serif SC','Songti SC',serif;font-weight:700;">$1</div>
+
+    <div style="position:relative;margin-top:10px;">
+      <div style="font-size:31px;line-height:1;color:#44444a;font-weight:700;margin-bottom:8px;">HP</div>
+      <div style="position:absolute;right:0;top:-8px;font-size:37px;line-height:1;color:#44444a;font-weight:700;">$5</div>
+      <div style="height:24px;border-radius:999px;background:#bc0b14;box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 1px 0 rgba(0,0,0,.08);"></div>
+    </div>
+
+    <div style="position:relative;display:flex;align-items:center;margin-top:15px;min-height:52px;font-size:20px;color:#595960;">
+      <div style="display:flex;gap:10px;align-items:center;">
+        <span style="padding:7px 17px;border-radius:10px;background:#f5c800;color:#272727;font-weight:800;">LV:$2</span>
+        <span style="padding:7px 17px;border-radius:10px;background:#f5f5f5;color:#3f4046;font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,.08);">$3</span>
+        <span style="padding:7px 17px;border-radius:10px;background:#f5f5f5;color:#3f4046;font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,.08);">$4</span>
+      </div>
+      <span style="position:absolute;left:50%;transform:translateX(-50%);padding:7px 17px;border-radius:10px;background:#f5f5f5;color:#3f4046;font-weight:700;display:inline-flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.08);">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="display:inline-block;vertical-align:middle;">
+          <path d="M12 2l8 3v6c0 5.2-3.3 9.9-8 11-4.7-1.1-8-5.8-8-11V5l8-3z" fill="none" stroke="#4a4d55" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M12 8v7M9 11h6" stroke="#4a4d55" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span>防御:$6</span>
+      </span>
+      <span style="margin-left:auto;color:#7b7b82;font-weight:700;">威胁度：$7</span>
+    </div>
+  </div>
+
+  <div style="margin:20px 0 0;border-top:1px solid #e1e4ea;border-bottom:1px solid #e1e4ea;padding:16px 20px 14px;">
+    <div style="display:flex;gap:8px;">
+      <div style="flex:1;text-align:center;">
+        <div style="font-size:24px;line-height:1.1;color:#5b5b62;font-family:'思源宋体 SC','Source Han Serif SC','Source Han Serif CN','Noto Serif SC','Songti SC',serif;font-weight:700;">力量</div>
+        <div style="margin-top:4px;font-size:36px;line-height:1;color:#57575e;font-family:'思源宋体 SC','Source Han Serif SC','Source Han Serif CN','Noto Serif SC','Songti SC',serif;font-weight:700;">$8</div>
+      </div>
+      <div style="flex:1;text-align:center;">
+        <div style="font-size:24px;line-height:1.1;color:#5b5b62;font-family:'思源宋体 SC','Source Han Serif SC','Source Han Serif CN','Noto Serif SC','Songti SC',serif;font-weight:700;">敏捷</div>
+        <div style="margin-top:4px;font-size:36px;line-height:1;color:#57575e;font-family:'思源宋体 SC','Source Han Serif SC','Source Han Serif CN','Noto Serif SC','Songti SC',serif;font-weight:700;">$9</div>
+      </div>
+      <div style="flex:1;text-align:center;">
+        <div style="font-size:24px;line-height:1.1;color:#5b5b62;font-family:'思源宋体 SC','Source Han Serif SC','Source Han Serif CN','Noto Serif SC','Songti SC',serif;font-weight:700;">体质</div>
+        <div style="margin-top:4px;font-size:36px;line-height:1;color:#57575e;font-family:'思源宋体 SC','Source Han Serif SC','Source Han Serif CN','Noto Serif SC','Songti SC',serif;font-weight:700;">$10</div>
+      </div>
+      <div style="flex:1;text-align:center;">
+        <div style="font-size:24px;line-height:1.1;color:#5b5b62;font-family:'思源宋体 SC','Source Han Serif SC','Source Han Serif CN','Noto Serif SC','Songti SC',serif;font-weight:700;">智力</div>
+        <div style="margin-top:4px;font-size:36px;line-height:1;color:#57575e;font-family:'思源宋体 SC','Source Han Serif SC','Source Han Serif CN','Noto Serif SC','Songti SC',serif;font-weight:700;">$11</div>
+      </div>
+      <div style="flex:1;text-align:center;">
+        <div style="font-size:24px;line-height:1.1;color:#5b5b62;font-family:'思源宋体 SC','Source Han Serif SC','Source Han Serif CN','Noto Serif SC','Songti SC',serif;font-weight:700;">感知</div>
+        <div style="margin-top:4px;font-size:36px;line-height:1;color:#57575e;font-family:'思源宋体 SC','Source Han Serif SC','Source Han Serif CN','Noto Serif SC','Songti SC',serif;font-weight:700;">$12</div>
+      </div>
+      <div style="flex:1;text-align:center;">
+        <div style="font-size:24px;line-height:1.1;color:#5b5b62;font-family:'思源宋体 SC','Source Han Serif SC','Source Han Serif CN','Noto Serif SC','Songti SC',serif;font-weight:700;">魅力</div>
+        <div style="margin-top:4px;font-size:36px;line-height:1;color:#57575e;font-family:'思源宋体 SC','Source Han Serif SC','Source Han Serif CN','Noto Serif SC','Songti SC',serif;font-weight:700;">$13</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:25px;padding:10px 20px 4px;display:flex;gap:20px;flex-wrap:wrap;">
+    <div style="flex:0 1 auto;font-size:24px;line-height:1.5;font-weight:600;color:#4f4f56;font-family:'思源宋体 SC','Source Han Serif SC','Source Han Serif CN','Noto Serif SC','Songti SC',serif;"><span style="color:#6a6d75;">⚔︎</span> 基本攻击：$14</div>
+    <div style="flex:0 1 auto;margin-left:auto;padding-right:18px;text-align:right;font-size:24px;line-height:1.5;font-weight:600;color:#4f4f56;font-family:'思源宋体 SC','Source Han Serif SC','Source Han Serif CN','Noto Serif SC','Songti SC',serif;"><span style="color:#6a6d75;">✦</span> 技能：$15</div>
+  </div>
+
+  <div style="margin-top:25px;padding:8px 20px 8px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+    <span style="padding:10px 18px;border-radius:12px;background:#f5f5f5;border:1px solid #dbe0e8;box-shadow:0 2px 8px rgba(0,0,0,.08);font-size:20px;line-height:1.2;color:#4c4c53;font-weight:700;">◈ 特征：$18</span>
+    <span style="padding:10px 18px;border-radius:12px;background:#f5f5f5;border:1px solid #dbe0e8;box-shadow:0 2px 8px rgba(0,0,0,.08);font-size:20px;line-height:1.2;color:#4c4c53;font-weight:700;"><span style="color:#6a6d75;">💔</span> 弱点：$16</span>
+    <span style="padding:10px 18px;border-radius:12px;background:#f5f5f5;border:1px solid #dbe0e8;box-shadow:0 2px 8px rgba(0,0,0,.08);font-size:20px;line-height:1.2;color:#4c4c53;font-weight:700;">🛡 抗性：$17</span>
+  </div>
+
+  <div style="margin:23px 20px 6px;display:flex;align-items:center;gap:10px;">
+    <div style="display:flex;align-items:center;justify-content:center;flex:0 0 50px;">
+      <svg viewBox="0 0 64 64" width="36" height="36" aria-hidden="true">
+        <circle cx="20" cy="20" r="10" fill="#8f9197"/>
+        <path d="M4 42c0-9 7-16 16-16s16 7 16 16" fill="none" stroke="#8f9197" stroke-width="6" stroke-linecap="round"/>
+        <path d="M34 16h22a6 6 0 0 1 6 6v12a6 6 0 0 1-6 6H46l-7 6v-6h-5a6 6 0 0 1-6-6V22a6 6 0 0 1 6-6z" fill="#8f9197"/>
+        <path d="M40 25h13M40 31h9" stroke="#d7d8dc" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div style="flex:1;padding:10px 14px;border-radius:6px;background:#f5f5f5;font-size:19px;line-height:1.75;color:#5a5a61;font-style:italic;font-weight:600;">$19</div>
+  </div>
+</div>

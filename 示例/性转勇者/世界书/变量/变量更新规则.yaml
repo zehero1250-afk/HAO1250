@@ -1,0 +1,31 @@
+---
+变量更新规则:
+  主角:
+    能力值:
+      type: number
+      range: 1~30
+      check: 仅在有明确成长/重伤/剧情调整时修改，六维为 力量、敏捷、体质、智力、感知、魅力
+    经验值:
+      type: number
+      check: 击败敌人、完成任务、探索新地点等后按 DnD 规则 delta 增加，不可减少除非剧情重置
+    等级:
+      type: number
+      range: 1~20
+      check: 经验值达到升级线时 +1，并更新 最大HP、熟练加值
+    当前HP:
+      type: number
+      range: 0~最大HP
+      check: 受伤、治疗、休息时更新
+    最大HP:
+      type: number
+      range: 1~999
+      check: 升级或体质/剧情变化时更新
+    熟练加值:
+      type: number
+      check: 升级时按 DnD 规则更新（1–4 级 +0，5–8 +1，9–12 +2，13–16 +3，17–20 +4）
+    状态效果:
+      type: array
+      check: 获得/解除状态（如 轻伤、中毒、诅咒）时 replace 或 insert/remove
+    最近检定:
+      type: object
+      check: 每次进行属性/豁免检定时更新 类型、结果、是否成功

@@ -1,0 +1,16 @@
+脚本名称：检定与战斗日志美化（DiceCheck / DiceCombat）
+
+说明：index.yaml 中需在「检定与战斗日志美化」之前启用「[预处理]战斗日志攻击行为标红」，将我方行动中的 (一次攻击)、(二次攻击) 等标红。
+
+查找正则表达式：
+/<(DiceCheck|DiceCombat)>\s*([\s\S]*?)<\/\1>/gi
+
+替换为：
+<div style="margin:10px 0;border:none;border-radius:10px;overflow:hidden;background:linear-gradient(180deg,#ffffff 0%,#fafafa 25%,#f5f5f5 50%,#f0f0f0 75%,#e8e8e8 100%);box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+  <div style="position:relative;padding:12px 20px;background:#4a4a4e;box-shadow:0 2px 6px rgba(0,0,0,0.15);">
+    <div style="position:absolute;left:20px;top:50%;transform:translateY(-50%);width:120px;height:24px;background:repeating-linear-gradient(105deg,#9a9a9e 0 10px,transparent 10px 18px);opacity:.65;"></div>
+    <div style="position:absolute;right:20px;top:50%;transform:translateY(-50%);width:120px;height:24px;background:repeating-linear-gradient(105deg,#9a9a9e 0 10px,transparent 10px 18px);opacity:.65;"></div>
+    <div style="position:relative;z-index:2;text-align:center;font-family:'思源黑体 CN','Source Han Sans SC','Source Han Sans CN','Noto Sans SC',sans-serif;font-weight:700;font-size:25px;letter-spacing:.12em;color:#ffd718;text-transform:uppercase;">$1</div>
+  </div>
+  <div style="padding:10px 12px;font-size:12px;color:#394055;line-height:1.8;white-space:pre-wrap;text-align:left;">$2</div>
+</div>

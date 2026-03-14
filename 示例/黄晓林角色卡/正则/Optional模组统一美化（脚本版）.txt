@@ -1,0 +1,113 @@
+```
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Optional 模组美化</title>
+  <style>
+    body { margin: 0; padding: 0; font-family: 'Source Han Serif CN','思源宋体 CN','Noto Serif CJK SC','Noto Serif SC',serif; font-weight: 700; color: #394055; text-align: center; }
+    .optional-log-app { display: block; margin: 10px 0; text-align: center !important; }
+    .optional-log-app * { text-align: center !important; }
+  </style>
+</head>
+<body>
+  <div class="optional-log-app" data-type="$1"><template class="log-content">$2</template></div>
+  <script>
+(function(){
+function parseKv(text){var o={},lines=text.split(/\r?\n/),curK=null,curV=null;for(var i=0;i<lines.length;i++){var l=lines[i],m=l.match(/^([^:：]+)[:：]\s*(.*)$/);if(m){if(curK!==null)o[curK]=curV;curK=m[1].trim();curV=m[2].trim();}else{if(curK!==null&&l.trim()!=='')curV=(curV?curV+'\n':'')+l;}}if(curK!==null)o[curK]=curV;return o;}
+function esc(v){if(!v)return'';return String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function parseHp(str){var r=[];var re=/(\d+)\s*\/\s*(\d+)\s*(?:\((\d+)%\))?/g,m;while((m=re.exec(str))!==null){var cur=parseInt(m[1],10),max=parseInt(m[2],10),pct=m[3]?parseInt(m[3],10):(max?Math.round(100*cur/max):0);r.push({cur:cur,max:max,pct:pct,raw:m[0]});}return r;}
+function parseTargetHp(str){if(!str)return[];var r=[],parts=str.split(',');for(var i=0;i<parts.length;i++){var m=parts[i].trim().match(/(.+?)\s+HP\s+(\d+)\/(\d+)/);if(m){var cur=parseInt(m[2],10),max=parseInt(m[3],10);r.push({name:m[1].trim(),cur:cur,max:max,pct:max?Math.round(100*cur/max):0});}}return r;}
+function barHtml(pct,label){var c=pct>50?'#68d391':pct>25?'#f6ad55':'#fc8181';return '<div style="margin:4px 0;font-family:\'Source Han Serif CN\',\'思源宋体 CN\',\'Noto Serif CJK SC\',\'Noto Serif SC\',serif;font-weight:700;text-align:center;"><div style="font-size:11px;color:#555;">'+label+'</div><div style="height:8px;border-radius:999px;background:#D8D8D8;overflow:hidden;"><div style="height:100%;width:'+Math.max(0,Math.min(100,pct))+'%;background:'+c+';border-radius:999px;transition:width .3s ease;"></div></div></div>';}
+function barHtmlNamed(name,cur,max,pct){var c=(pct>=95||(max&&cur>=max))?'#8B0000':pct>50?'#68d391':pct>25?'#f6ad55':'#ed1c24';return '<div style="display:flex;align-items:center;gap:10px;margin:6px 0;padding:0 12px;font-family:\'Source Han Serif CN\',\'思源宋体 CN\',\'Noto Serif CJK SC\',\'Noto Serif SC\',serif;font-weight:700;"><span style="font-size:13px;color:#666;flex-shrink:0;">'+esc(name)+'</span><div style="flex:1;min-width:0;height:8px;border-radius:999px;background:#D8D8D8;overflow:hidden;"><div style="height:100%;width:'+Math.max(0,Math.min(100,pct))+'%;background:'+c+';border-radius:999px;transition:width .3s ease;"></div></div><span style="font-size:13px;color:#666;flex-shrink:0;">HP:'+cur+'/'+max+'</span></div>';}
+function render(type,text){
+var kv=parseKv(text);
+function row(k,v){if(!v)return'';return '<div style="padding:4px 0;font-family:\'Source Han Serif CN\',\'思源宋体 CN\',\'Noto Serif CJK SC\',\'Noto Serif SC\',serif;font-weight:700;text-align:center;"><span style="color:#718096;font-size:12px;">'+esc(k)+'</span> <span style="color:#2d3748;">'+esc(v).replace(/\n/g,'<br>')+'</span></div>';}
+function rowVal(v){if(!v)return'';return '<div style="padding:4px 0;margin-bottom:6px;font-family:\'Source Han Serif CN\',\'思源宋体 CN\',\'Noto Serif CJK SC\',\'Noto Serif SC\',serif;font-weight:700;text-align:center;"><span style="color:#2d3748;">'+esc(v).replace(/\n/g,'<br>')+'</span></div>';}
+if(type==='DiceCombat'){
+var dcHtml='<div style="margin:10px 0;border-radius:12px;overflow:hidden;background:linear-gradient(180deg,#eeeeee 0%,#eeeeee 50%,#f5f5f5 50%,#f5f5f5 100%);box-shadow:0 2px 12px rgba(0,0,0,0.14);text-align:center;"><div style="display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:linear-gradient(135deg,#4a4a4e 0%,#3d3d41 100%);font-family:\'Source Han Sans SC\',\'Noto Sans CJK SC\',\'Noto Sans SC\',sans-serif;font-weight:700;font-size:20px;color:#ffd718;letter-spacing:.1em;"><span style="color:#d4af37;font-size:22px;line-height:1;">☣</span><span>DICECOMBAT</span><span style="color:#d4af37;font-size:22px;line-height:1;">☣</span></div><div style="padding:12px 14px;background:linear-gradient(180deg,#eeeeee 0%,#eeeeee 50%,#f5f5f5 50%,#f5f5f5 100%);font-family:\'Source Han Serif CN\',\'思源宋体 CN\',\'Noto Serif CJK SC\',\'Noto Serif SC\',serif;font-weight:700;font-size:15px;color:#394055;line-height:1.6;text-align:center;">';
+var r1Parts=[];if(kv['角色'])r1Parts.push(esc(kv['角色']));if(kv['动作'])r1Parts.push('<span style="color:#8B0000">'+esc(kv['动作'])+'</span>');if(kv['目标'])r1Parts.push(esc(kv['目标']));if(r1Parts.length)dcHtml+='<div style="padding:6px 0;margin-bottom:6px;">'+r1Parts.join(' ')+'</div>';
+if(kv['骰运'])dcHtml+='<div style="margin:0 -14px 6px -14px;padding:6px 14px;background:#E3E3E3;box-shadow:inset 0 -2px 6px rgba(180,170,160,.2);">'+esc(kv['骰运']).replace(/\n/g,'<br>')+'</div>';
+function styleResult(t){var s=esc(t).replace(/\n/g,'<br>');s=s.replace(/\[命中\]/g,'<span style="font-size:21px;color:#e67e22;font-weight:700">命中</span>');s=s.replace(/\[暴击\]/g,'<span style="font-size:21px;color:#c0392b;font-weight:700">暴击</span>');s=s.replace(/\[落空\]/g,'<span style="font-size:21px;color:#27ae60;font-weight:700">落空</span>');return s;}
+if(kv['结果'])dcHtml+='<div style="padding:6px 0;margin-bottom:6px;">'+styleResult(kv['结果'])+'</div>';
+if(kv['状态'])dcHtml+='<div style="padding:6px 0;margin-bottom:6px;">'+esc(kv['状态']).replace(/\n/g,'<br>')+'</div>';
+var targetHps=parseTargetHp(kv['目标剩余']);
+if(targetHps.length){dcHtml+='<div style="margin:0 -14px 6px -14px;padding:6px 14px;background:#E3E3E3;box-shadow:inset 0 -2px 6px rgba(180,170,160,.2);">';targetHps.forEach(function(h){dcHtml+=barHtmlNamed(h.name,h.cur,h.max,h.pct);});dcHtml+='</div>';}
+else if(kv['目标剩余'])dcHtml+='<div style="padding:6px 0;margin-bottom:6px;">'+esc(kv['目标剩余']).replace(/\n/g,'<br>')+'</div>';
+if(kv['特图的旁白'])dcHtml+='<div style="padding:6px 0;margin-top:8px;"><span style="color:#6b7280;">🤖</span> <span style="font-style:italic;">'+esc(kv['特图的旁白']).replace(/\n/g,'<br>')+'</span></div>';
+return dcHtml+'</div></div>';
+}
+if(type==='DiceCheck'){
+var html='<div style="margin:10px 0;border-radius:12px;overflow:hidden;background:linear-gradient(180deg,#fff 0%,#fafafa 100%);box-shadow:0 2px 12px rgba(0,0,0,0.14);text-align:center;"><div style="padding:12px 20px;background:linear-gradient(135deg,#4a4a4e 0%,#3d3d41 100%);text-align:center;font-family:\'Source Han Sans SC\',\'Noto Sans CJK SC\',\'Noto Sans SC\',sans-serif;font-weight:700;font-size:20px;color:#ffd718;">DICECHECK</div><div style="padding:12px 14px;font-family:\'Source Han Serif CN\',\'思源宋体 CN\',\'Noto Serif CJK SC\',\'Noto Serif SC\',serif;font-weight:700;font-size:15px;color:#394055;text-align:center;">';
+['角色','检定','骰运','结果'].forEach(function(k){if(kv[k])html+=rowVal(kv[k]);});if(kv['特图的旁白'])html+='<div style="padding:4px 0;margin-top:8px;font-family:\'Source Han Serif CN\',\'思源宋体 CN\',\'Noto Serif CJK SC\',\'Noto Serif SC\',serif;font-weight:700;text-align:center;"><span style="color:#6b7280;">🤖</span> <span style="font-style:italic;">'+esc(kv['特图的旁白']).replace(/\n/g,'<br>')+'</span></div>';
+return html+'</div></div>';
+}
+if(type==='ExperienceLog'){
+var prog=kv['当前进度']||'';var pctMatch=prog.match(/(\d+)%/);var pct=pctMatch?parseInt(pctMatch[1],10):0;var parts=prog.split(/\s*\|\s*/);var rightLabel=parts[1]?parts[1].trim():'';
+var expHtml='<div style="margin:10px 0;border-radius:10px;overflow:hidden;background:#f8f8f8;box-shadow:0 2px 12px rgba(0,0,0,0.14);font-family:\'Source Han Sans SC\',\'Noto Sans CJK SC\',\'Noto Sans SC\',sans-serif;text-align:center;"><div style="padding:10px 14px 8px;font-weight:700;font-size:18px;color:#363636;letter-spacing:.05em;">EXPERIENCE</div><div style="height:2px;background:linear-gradient(90deg,transparent,#d4af37,#d4af37,transparent);margin:0 14px 12px;"></div>';
+if(kv['来源'])expHtml+='<div style="padding:4px 0;font-size:14px;color:#555;">来源 <span style="font-weight:700;color:#555;">'+esc(kv['来源'])+'</span></div>';
+var gainRaw=kv['本次获得']||'';var gainNum=gainRaw.replace(/\s*EXP\s*$/i,'');var gainExp=/EXP\s*$/i.test(gainRaw)?' EXP':'';
+expHtml+='<div style="padding:8px 0 4px;font-size:48px;font-weight:700;color:#555;line-height:1;">'+esc(gainNum)+'<span style="font-size:22px;color:#d4af37;font-weight:700;vertical-align:middle;margin-left:2px;">'+esc(gainExp)+'</span></div>';
+if(kv['明细'])expHtml+='<div style="padding:2px 0 8px;font-size:13px;color:#555;">'+esc(kv['明细']).replace(/\n/g,'<br>')+'</div>';
+expHtml+='<div style="padding:8px 14px 12px;"><div style="display:flex;justify-content:space-between;font-size:13px;color:#aaa;margin-bottom:6px;"><span>进度 '+pct+'%</span><span>'+esc(rightLabel)+'</span></div><div style="height:8px;border-radius:999px;background:#ccc;overflow:hidden;"><div style="height:100%;width:'+Math.max(0,Math.min(100,pct))+'%;background:#d4af37;border-radius:999px;"></div></div></div></div>';
+if(kv['特图的旁白'])expHtml+='<div style="padding:8px 14px 12px;font-size:13px;color:#8b4513;font-style:italic;border-top:1px solid #e0e0e0;"><span style="color:#6b7280;">🤖</span> '+esc(kv['特图的旁白']).replace(/\n/g,'<br>')+'</div>';
+return expHtml+'</div>';
+}
+if(type==='LootLog'){
+function equipItemColor(s){var t=esc(s).trim();if(/神话|传说/.test(t))return '<span style="color:#f1c40f">'+t+'</span>';if(/史诗/.test(t))return '<span style="color:#e91e8c">'+t+'</span>';if(/稀有/.test(t))return '<span style="color:#5dade2">'+t+'</span>';if(/普通/.test(t))return '<span style="color:#bdc3c7">'+t+'</span>';return '<span style="color:#f1c40f">'+t+'</span>';}
+function equipItemsHtml(v){if(!v||v==='无')return '';var items=(v+'').split(/[,，;；、\n]+/).map(function(x){return x.trim();}).filter(Boolean);return items.map(equipItemColor).join(' ');}
+var hazardGrad='repeating-linear-gradient(45deg,#f1c40f 0,#f1c40f 5px,#000 5px,#000 10px)';
+var lootOuter='<div style="margin:10px 0;border-radius:16px;overflow:hidden;background:#3d3630;box-shadow:0 2px 12px rgba(0,0,0,0.14);font-family:\'Source Han Sans SC\',\'Noto Sans CJK SC\',sans-serif;">';
+var lootHead='<div style="display:flex;align-items:flex-start;justify-content:space-between;padding:0 14px 0 14px;gap:0;background:#000;"><div style="width:130px;height:36px;flex-shrink:0;background:'+hazardGrad+';"></div><div style="background:#f1c40f;color:#fff;font-weight:700;font-size:16px;letter-spacing:.1em;padding:6px 20px;border-radius:0 0 12px 12px;margin:0 4px;">LOOT</div><div style="width:130px;height:36px;flex-shrink:0;background:'+hazardGrad+';"></div></div>';
+var lootTitle=(kv['来源'])?'<div style="text-align:center;padding:8px 14px 4px;font-size:15px;color:#f1c40f;font-weight:700;">'+esc(kv['来源'])+'</div>':'';
+var lootDetail=(kv['明细'])?'<div style="text-align:center;padding:0 14px 8px;font-size:12px;color:#9a8a7a;">'+esc(kv['明细'])+'</div>':'';
+var lootRow=function(icon,label,content,bg,labelColor){return '<div style="position:relative;padding:10px 14px;background:'+bg+';min-height:40px;text-align:left;"><div style="position:absolute;left:0;right:0;top:0;bottom:0;display:flex;align-items:center;justify-content:center;pointer-events:none;"><span style="font-size:14px;color:#fff;">'+content+'</span></div><div style="position:relative;z-index:1;display:inline-flex;align-items:center;gap:10px;background:'+bg+';padding-right:8px;">'+icon+'<span style="font-weight:700;font-size:14px;color:'+labelColor+';flex-shrink:0;">'+label+'</span></div></div>';};
+var lootBottomBg='background:radial-gradient(ellipse at center,#c27a2b 0%,#6b4012 35%,#3d2208 65%,#1a0a00 100%);border-radius:0 0 16px 16px;';
+var lootHtml=lootOuter+lootHead+'<div style="'+lootBottomBg+'">'+lootTitle+lootDetail;
+var hasVal=function(v){return v!==undefined&&v!==null&&(v+'').trim()!==''&&(v+'').trim()!=='无';};
+lootHtml+=lootRow('<span style="color:#c0392b">🗡️</span>','装备',hasVal(kv['装备'])?(equipItemsHtml(kv['装备'])||esc(kv['装备'])):'无','#2d2520','#e91e8c');
+if(hasVal(kv['材料']))lootHtml+=lootRow('<span style="color:#b0a8a0">⚙️</span>','材料',esc(kv['材料']).replace(/\n/g,' '),'transparent','#b0a8a0');
+if(hasVal(kv['金币']))lootHtml+=lootRow('<span style="color:#e67e22">💰</span>','废土券',(function(v){var n=(v+'').replace(/\s/g,'');return n&&n!=='0'?'+'+n:(n||'0');})(kv['金币']),'#2d2520','#e67e22');
+if(hasVal(kv['特殊掉落']))lootHtml+=lootRow('✨','特殊掉落',esc(kv['特殊掉落']).replace(/\n/g,' '),'#5c2e2e','#fff');
+if(kv['特图的旁白'])lootHtml+='<div style="display:flex;align-items:center;padding:12px 14px;gap:10px;"><span style="font-size:18px;">📺</span><span style="font-size:13px;color:#e8e0d8;">'+esc(kv['特图的旁白']).replace(/\n/g,'<br>')+'</span></div>';
+return lootHtml+'</div></div>';
+}
+if(type==='QuestContract'){
+var qTitle=kv['任务']||'任务';var qLv=kv['等级']||'';var qGiver=kv['委托方']||'';var qDiff=kv['难度']||'';var qDesc=kv['简介']||'';var qReward=kv['奖励']||'';var qDeliver=kv['交付']||'';var qPrep=kv['准备']||kv['下一步']||'';var qComment=kv['特图的旁白']||'';
+var brown='#5c4033';var brownDark='#4a3328';var lightBg='#f5f2eb';var accent='#b8860b';var labelColor='#2d2d2d';var valueColor='#555';
+var qHtml='<div style="margin:10px 0;border-radius:12px;overflow:hidden;background:#1a1a1a;box-shadow:0 2px 12px rgba(0,0,0,0.2);font-family:\'Source Han Sans SC\',\'Noto Sans CJK SC\',\'Noto Sans SC\',sans-serif;">';
+qHtml+='<div style="padding:10px 16px;background:linear-gradient(135deg,'+brownDark+' 0%,'+brown+' 100%);text-align:center;font-weight:700;font-size:18px;letter-spacing:.15em;color:#fff;">QUEST</div>';
+var qLvRaw=(qLv+'').replace(/^推荐\s*/,'').replace(/\s*[|｜]\s*难度[：:]\s*简单/,'').replace(/\s*难度[：:]\s*简单/,'').trim();
+var showSimple=/简单/.test((qDiff+'').replace(/^难度[：:\s]*/,'').trim())||/简单/.test(qLv+'');
+qHtml+='<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:14px 16px;background:'+lightBg+';">';
+qHtml+='<div style="flex:0 0 auto;text-align:left;"><div style="font-weight:700;font-size:17px;color:'+labelColor+';">'+esc(qTitle)+'</div></div>';
+qHtml+='<div style="flex:1 1 0;min-width:0;display:flex;justify-content:flex-end;"><div style="display:flex;align-items:center;gap:6px;"><span style="font-size:14px;">👤</span><span style="font-size:13px;color:'+labelColor+';">'+esc(qGiver)+'</span></div></div>';
+qHtml+='</div>';
+qHtml+='<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;background:#e8e4dc;border-bottom:1px solid #e0ddd6;">';
+qHtml+='<div style="font-size:13px;color:'+labelColor+';padding-left:0;">'+(qLvRaw?'推荐 <span style="color:'+accent+';font-weight:700;">'+esc(qLvRaw)+'</span>':'')+'</div>';
+qHtml+='<div style="flex-shrink:0;">'+(showSimple?'<span style="display:inline-block;padding:2px 10px;border-radius:999px;background:#27ae60;color:#fff;font-size:12px;font-weight:700;">简单</span>':'')+'</div>';
+qHtml+='</div>';
+if(qDesc){qHtml+='<div style="padding:10px 16px;background:linear-gradient(135deg,'+brownDark+' 0%,'+brown+' 100%);text-align:center;font-size:14px;color:#fff;line-height:1.5;">'+esc(qDesc).replace(/\n/g,'<br>')+'</div>';}
+function qRow(lbl,val,highlight){if(!val)return'';return '<div style="position:relative;padding:6px 16px;background:'+lightBg+';"><span style="position:absolute;left:16px;font-size:13px;color:'+labelColor+';">'+esc(lbl)+'</span><div style="width:100%;text-align:center;"><span style="font-size:13px;color:'+(highlight?accent:valueColor)+';">'+esc(val).replace(/\n/g,'<br>')+'</span></div></div>';}
+if(qReward||qDeliver||qPrep){qHtml+='<div style="border-top:1px solid #e8e4dc;">';qHtml+=qRow('奖励',qReward,true);qHtml+=qRow('交付',qDeliver,false);qHtml+=qRow('准备',qPrep,false);qHtml+='</div>';}
+Object.keys(kv).forEach(function(k){var skip=['任务','等级','委托方','难度','简介','奖励','交付','准备','下一步','特图的旁白'];if(skip.indexOf(k)!==-1)return;if(kv[k])qHtml+=qRow(k,kv[k],false);});
+if(qComment){qHtml+='<div style="position:relative;padding:12px 16px;background:#e8e4dc;border-top:1px solid #e0ddd6;"><div style="position:absolute;left:16px;font-size:20px;line-height:1.5;">📺</div><div style="width:100%;text-align:center;"><span style="font-size:13px;color:#6b7280;line-height:1.5;">'+esc(qComment).replace(/\n/g,'<br>')+'</span></div></div>';}
+qHtml+='</div>';
+return qHtml;
+}
+return '<div style="padding:8px;color:#666;font-family:\'Source Han Serif CN\',\'思源宋体 CN\',\'Noto Serif CJK SC\',\'Noto Serif SC\',serif;font-weight:700;text-align:center;">'+text.replace(/\n/g,'<br>')+'</div>';
+}
+document.querySelectorAll('.optional-log-app').forEach(function(el){
+if(el.dataset.processed)return;el.dataset.processed='1';
+var type=el.getAttribute('data-type')||'',tpl=el.querySelector('template.log-content');
+if(!tpl||!type)return;
+var text=(tpl.content?tpl.content.textContent:tpl.textContent||'').trim();
+var html=render(type,text);
+if(html){el.innerHTML=html;}
+});
+})();
+  </script>
+</body>
+</html>
+```

@@ -1,0 +1,91 @@
+---
+等级与经验系统_LevelAndExpSystem:
+  title: 废土之诗 - 等级与经验系统（含越级击杀）
+  type: rule
+
+  desc: |
+    本条目定义玩家等级成长、经验获取与敌人等级奖励规则。
+    所有升级与经验结算优先遵循本规则。
+
+  一_玩家等级:
+    范围: 1~60
+    升级条件: player.exp >= player.expToNext
+    升级后处理: |
+      - player.level +1
+      - 保留溢出经验：player.exp = player.exp - oldExpToNext
+      - 更新新阈值：player.expToNext = round(baseExpToNext * expGrowthRate^(level-1))
+    升级属性建议:
+      - maxHp +8~15
+      - atk +1~2
+      - def +1~2
+      - speed +0~1
+
+  二_经验阈值:
+    变量来源:
+      baseExpToNext: progression.baseExpToNext
+      expGrowthRate: progression.expGrowthRate
+      levelCap: progression.levelCap
+    默认参数:
+      baseExpToNext: 100
+      expGrowthRate: 1.2
+      levelCap: 60
+    公式: |
+      expToNext(level) = round(baseExpToNext * expGrowthRate^(level-1))
+
+  三_敌人等级:
+    字段:
+      敌人等级: combat.enemy.level
+      威胁等级: combat.enemy.threat
+      奖励经验: combat.enemy.expReward
+    威胁等级分段_按敌人LV:
+      I级威胁: 1~10
+      II级威胁: 11~20
+      III级威胁: 21~30
+      IV级威胁: 31~40
+      V级威胁: 41~50
+      VI级威胁: 51~60
+
+  四_经验来源:
+    探索事件: 8~25
+    普通战斗胜利: 15~40
+    精英或首领战: 50~300
+    任务完成: 30~200
+
+  五_越级击杀经验:
+    敌我等级差定义: diff = enemy.level - player.level
+    精英敌人加成:
+      条件: "目标为精英敌人（elite = true）"
+      经验加成: "+50%（x1.5）"
+    赏金首领加成:
+      条件: "目标为赏金首领（bountyBoss = true）"
+      经验加成: "+100%（x2.0）"
+    加成优先级:
+      - 赏金首领使用 bountyMultiplier = 2.0
+      - 非赏金首领但为精英敌人使用 bountyMultiplier = 1.5
+      - 其余情况 bountyMultiplier = 1.0
+    倍率规则:
+      diff <= -3: x0.6
+      diff = -2: x0.75
+      diff = -1: x0.9
+      diff = 0: x1.0
+      diff = 1: x1.2
+      diff = 2: x1.45
+      diff = 3: x1.75
+      diff >= 4: x2.1
+    跳级规则:
+      - 不设置单次击杀经验封顶
+      - 允许一次结算触发多级连跳
+      - 结算后按实际经验连续执行升级流程，直到 player.exp < player.expToNext
+    计算建议: |
+      killExp = floor(baseEnemyExp * threatMultiplier * diffMultiplier * bountyMultiplier)
+      bountyMultiplier = 2.0（赏金首领）/ 1.5（精英）/ 1.0（普通）
+      threatMultiplier 建议：I级1.0 / II级1.3 / III级1.7 / IV级2.2 / V级2.8 / VI级3.5
+
+  六_一致性要求:
+    - 敌人等级、威胁、奖励经验必须匹配，不得随意跳值
+    - 升级时必须同时更新 level / exp / expToNext
+    - 不得无依据发放超额经验
+
+  summary: |
+    本系统统一了等级上限、经验阈值、敌人等级和越级击杀收益。
+    跑团时，经验应通过明确公式与倍率结算，并同步写入变量更新。

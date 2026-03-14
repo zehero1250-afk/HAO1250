@@ -1,0 +1,143 @@
+---
+变量更新规则:
+  title: 废土之诗 ARPG 变量更新规则（等级/经验/敌人等级优先）
+  type: rule
+
+  核心目标: |
+    本规则优先保证三件事：
+    1) 等级系统稳定成长
+    2) 经验系统可计算且可追踪
+    3) 敌人等级与奖励匹配
+
+  一_玩家等级系统:
+    等级范围:
+      最低等级: 1
+      最高等级: 60
+    等级成长原则: |
+      - 玩家等级由 player.level 表示。
+      - 每次升级必须至少提升一项核心属性（maxHp/atk/def/speed）。
+      - 允许因高额经验产生连续升级（多级连跳）。
+    升级基础增益建议:
+      - maxHp +8~15
+      - atk +1~2
+      - def +1~2
+      - speed +0~1
+
+  二_经验系统:
+    字段定义:
+      当前经验: player.exp
+      升级阈值: player.expToNext
+      成长系数: progression.expGrowthRate
+      基础阈值: progression.baseExpToNext
+    阈值公式: |
+      新的 expToNext 建议按以下公式：
+      round( progression.baseExpToNext * (progression.expGrowthRate ^ (player.level - 1)) )
+      默认参数：base=100，growth=1.2
+    经验获取建议:
+      探索事件: 8~25
+      普通战斗胜利: 15~40
+      精英或首领战: 50~300
+      任务完成: 30~200
+    升级结算规则: |
+      - 若 player.exp >= player.expToNext：触发升级。
+      - 升级后可将溢出经验保留：
+        player.exp = player.exp - oldExpToNext
+      - 然后更新 player.level 与新的 player.expToNext。
+      - 允许同回合多级连跳：循环结算，直到 player.exp < player.expToNext。
+
+  三_敌人等级系统:
+    字段定义:
+      敌人等级: combat.enemy.level
+      敌人奖励经验: combat.enemy.expReward
+      敌人威胁: combat.enemy.threat（I~VI）
+      是否精英: combat.enemy.elite（true/false）
+      是否赏金首领: combat.enemy.bountyBoss（true/false）
+    敌人威胁基线_按敌人LV:
+      I级威胁: 1~10
+      II级威胁: 11~20
+      III级威胁: 21~30
+      IV级威胁: 31~40
+      V级威胁: 41~50
+      VI级威胁: 51~60
+    基础属性映射建议:
+      - 敌人maxHp可按等级线性提高（例如 20 + level*6，再按威胁修正）
+      - 敌人伤害可按等级与威胁共同提高
+      - 低级敌人也必须至少有 1 点有效伤害
+    奖励经验公式建议: |
+      expReward ≈ 12 + enemy.level * 4，再按威胁修正：
+      I级 x1.0，II级 x1.3，III级 x1.7，IV级 x2.2，V级 x2.8，VI级 x3.5
+      精英敌人经验加成：x1.5
+      赏金首领经验加成：x2.0（优先于精英加成）
+      最终向下取整，且至少为 5。
+
+  四_战利品变量更新:
+    最低更新要求: |
+      战斗结算后至少同步以下字段中的变化项：
+      - player.gold / player.ammo / player.medkit / player.scrap
+      - equipment（若获得或替换装备）
+      - log.lootHint（简要写明本次掉落）
+    掉落结算原则: |
+      - 普通/精英/首领按《战利品掉落规则》对应掉落池结算
+      - 威胁等级 I~VI 影响掉落数量与品质权重
+      - 敌我等级差可修正材料与货币掉落数量
+  五_战斗流程与伤害:
+    回合步骤: |
+      1) 回合开始 -> 更新 combat.round
+      2) 先手判定 -> 参考 speed 与敌人等级
+      3) 玩家行动
+      4) 敌方行动
+      5) 结算 hp/stamina/ammo/effects
+      6) 胜负判定（任一方 hp<=0 结束）
+    伤害公式: |
+      最终伤害 = max(1, 基础伤害 + 攻击修正 - 防御减伤)
+      暴击可使用 x1.5 或 +50%。
+    消耗建议:
+      普通射击: ammo-1 stamina-4
+      压制射击: ammo-3 stamina-8
+      近战强攻: stamina-10
+      防御架势: stamina-6
+      使用医疗包: medkit-1
+
+  六_任务与装备联动:
+    任务奖励: |
+      奖励可包含 gold/ammo/medkit/scrap/exp，必须与任务难度匹配。
+    首领悬赏: |
+      首领任务金额遵循《物品价格规则》的等级定价系统。
+    装备掉落: |
+      装备遵循《物品价格规则》的品级生成规则，不得低品级超模。
+
+  七_角色口吻约束:
+    雅各布与李泰:
+      - 对陈春璃称呼固定为“春璃姐”或“璃姐”
+      - 禁止“小陈”“陈小姐”“直呼全名”
+      - 雅各布偏冲动，李泰偏稳重兜底
+
+  updatevariable格式:
+    规则: |
+      仅在回复末尾输出一次 `<updatevariable>`，只写变化字段。
+    示例: |
+      <updatevariable>
+      player:
+        level: 2
+        exp: 18
+        expToNext: 120
+        maxHp: 112
+        atk: 13
+        gold: 156
+        scrap: 9
+      combat:
+        enemy:
+          level: 3
+          threat: I
+          expReward: 29
+          elite: false
+          bountyBoss: false
+      log:
+        lootHint: "掉落：废金属x3，子弹x6，普通手套x1"
+      </updatevariable>
+
+  禁止事项:
+    - 不得经验和等级不同步
+    - 不得敌人等级与奖励经验严重失配
+    - 不得遗漏精英/赏金首领标记导致经验倍率错算
+    - 不得在无战斗时保留旧敌人 hp 与 intent

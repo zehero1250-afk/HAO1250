@@ -1,0 +1,617 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "世界": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "当前时间": {
+          "type": "string"
+        },
+        "当前地点": {
+          "type": "string"
+        },
+        "entrance": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "海报诱惑": {
+              "type": "string"
+            }
+          }
+        },
+        "status_in_Eden": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "编号": {
+              "default": 9527,
+              "type": "number"
+            },
+            "分配": {
+              "default": "A厂区维修组",
+              "type": "string"
+            },
+            "幻灭": {
+              "type": "string"
+            }
+          }
+        },
+        "势力信息": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "附近信息": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "小道消息": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "任务列表": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "标题": {
+                "type": "string"
+              },
+              "描述": {
+                "type": "string"
+              },
+              "状态": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "标题",
+              "描述"
+            ]
+          }
+        }
+      }
+    },
+    "主角": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "种族": {
+          "default": "人类",
+          "type": "string"
+        },
+        "能力值": {
+          "default": {
+            "力量": 10,
+            "敏捷": 10,
+            "体质": 10,
+            "智力": 10,
+            "感知": 10,
+            "魅力": 10
+          },
+          "$ref": "#/$defs/__schema0"
+        },
+        "经验值": {
+          "type": "number"
+        },
+        "等级": {
+          "default": 1,
+          "type": "number"
+        },
+        "当前HP": {
+          "default": 10,
+          "type": "number"
+        },
+        "最大HP": {
+          "default": 10,
+          "type": "number"
+        },
+        "体力": {
+          "default": 100,
+          "type": "number"
+        },
+        "理智": {
+          "default": 70,
+          "type": "number"
+        },
+        "熟练加值": {
+          "type": "number"
+        },
+        "状态效果": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "货币": {
+          "type": "number"
+        },
+        "最近检定": {
+          "default": {
+            "类型": "",
+            "结果": "",
+            "是否成功": false
+          },
+          "type": "object",
+          "properties": {
+            "类型": {
+              "type": "string"
+            },
+            "结果": {
+              "type": "string"
+            },
+            "是否成功": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "类型",
+            "结果",
+            "是否成功"
+          ]
+        },
+        "物品栏": {
+          "default": {},
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "description": "物品名"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "描述": {
+                "type": "string"
+              },
+              "数量": {
+                "type": "number"
+              },
+              "品级": {
+                "$ref": "#/$defs/__schema1"
+              },
+              "分类": {
+                "type": "string",
+                "enum": [
+                  "消耗品",
+                  "材料",
+                  "杂物",
+                  "任务重要"
+                ]
+              },
+              "功能描述": {
+                "type": "string"
+              },
+              "使用与限制": {
+                "type": "string"
+              },
+              "可装备部位": {
+                "type": "string"
+              },
+              "伤害骰": {
+                "type": "string"
+              },
+              "攻击力": {
+                "type": "number"
+              },
+              "固定伤害": {
+                "type": "number"
+              },
+              "防御": {
+                "type": "number"
+              },
+              "属性说明": {
+                "type": "string"
+              },
+              "词条": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "描述",
+              "数量"
+            ]
+          }
+        },
+        "已装备": {
+          "default": {},
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "description": "栏位标识"
+          },
+          "additionalProperties": {
+            "type": "string",
+            "description": "物品名"
+          }
+        },
+        "NPC好感度": {
+          "default": {},
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "description": "NPC标识"
+          },
+          "additionalProperties": {
+            "type": "number"
+          }
+        },
+        "RP点": {
+          "type": "number"
+        },
+        "抽奖次数": {
+          "type": "number"
+        },
+        "奖池": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "名称": {
+                "type": "string"
+              },
+              "类型": {
+                "type": "string",
+                "enum": [
+                  "装备",
+                  "道具"
+                ]
+              },
+              "品级": {
+                "$ref": "#/$defs/__schema1"
+              },
+              "描述": {
+                "type": "string"
+              },
+              "装备子类型": {
+                "type": "string",
+                "enum": [
+                  "武器",
+                  "防具",
+                  "饰物"
+                ]
+              }
+            },
+            "required": [
+              "名称",
+              "类型"
+            ]
+          }
+        },
+        "个人想法": {
+          "type": "string"
+        },
+        "队友": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "特质": {
+          "default": [],
+          "maxItems": 8,
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/__schema2"
+          }
+        }
+      }
+    },
+    "陈莹姬": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "种族": {
+          "default": "改造体",
+          "type": "string"
+        },
+        "等级": {
+          "default": 30,
+          "type": "number"
+        },
+        "当前HP": {
+          "default": 130,
+          "type": "number"
+        },
+        "最大HP": {
+          "default": 130,
+          "type": "number"
+        },
+        "能力值": {
+          "default": {
+            "力量": 14,
+            "敏捷": 14,
+            "体质": 12,
+            "智力": 12,
+            "感知": 13,
+            "魅力": 16
+          },
+          "$ref": "#/$defs/__schema0"
+        },
+        "威慑值": {
+          "default": 85,
+          "type": "number"
+        },
+        "服从度": {
+          "default": 90,
+          "type": "number"
+        },
+        "理智": {
+          "default": 45,
+          "type": "number"
+        },
+        "当前状态": {
+          "default": "巡视",
+          "type": "string"
+        },
+        "兴奋度": {
+          "type": "number"
+        },
+        "对主角态度": {
+          "default": "蔑视",
+          "type": "string"
+        },
+        "好感度": {
+          "default": 25,
+          "type": "number"
+        },
+        "最近检定": {
+          "default": {
+            "类型": "",
+            "结果": "",
+            "是否成功": false
+          },
+          "type": "object",
+          "properties": {
+            "类型": {
+              "type": "string"
+            },
+            "结果": {
+              "type": "string"
+            },
+            "是否成功": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "类型",
+            "结果",
+            "是否成功"
+          ]
+        },
+        "外貌与服装": {
+          "type": "string"
+        },
+        "内心想法": {
+          "type": "string"
+        },
+        "已装备": {
+          "default": {},
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "物品栏": {
+          "default": {},
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "描述": {
+                "type": "string"
+              },
+              "数量": {
+                "type": "number"
+              },
+              "品级": {
+                "$ref": "#/$defs/__schema1"
+              }
+            },
+            "required": [
+              "描述",
+              "数量"
+            ]
+          }
+        }
+      }
+    },
+    "屠妇": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "种族": {
+          "default": "变异体",
+          "type": "string"
+        },
+        "能力值": {
+          "default": {
+            "力量": 18,
+            "敏捷": 16,
+            "体质": 14,
+            "智力": 14,
+            "感知": 15,
+            "魅力": 6
+          },
+          "$ref": "#/$defs/__schema0"
+        },
+        "等级": {
+          "default": 25,
+          "type": "number"
+        },
+        "当前HP": {
+          "default": 220,
+          "type": "number"
+        },
+        "最大HP": {
+          "default": 220,
+          "type": "number"
+        },
+        "最近检定": {
+          "default": {
+            "类型": "",
+            "结果": "",
+            "是否成功": false
+          },
+          "type": "object",
+          "properties": {
+            "类型": {
+              "type": "string"
+            },
+            "结果": {
+              "type": "string"
+            },
+            "是否成功": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "类型",
+            "结果",
+            "是否成功"
+          ]
+        },
+        "好感度": {
+          "default": 40,
+          "type": "number"
+        },
+        "内心想法": {
+          "type": "string"
+        },
+        "简述": {
+          "type": "string"
+        }
+      }
+    },
+    "教授": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "种族": {
+          "default": "人类",
+          "type": "string"
+        },
+        "能力值": {
+          "default": {
+            "力量": 10,
+            "敏捷": 10,
+            "体质": 10,
+            "智力": 20,
+            "感知": 16,
+            "魅力": 18
+          },
+          "$ref": "#/$defs/__schema0"
+        },
+        "等级": {
+          "default": 33,
+          "type": "number"
+        },
+        "当前HP": {
+          "default": 198,
+          "type": "number"
+        },
+        "最大HP": {
+          "default": 198,
+          "type": "number"
+        },
+        "最近检定": {
+          "default": {
+            "类型": "",
+            "结果": "",
+            "是否成功": false
+          },
+          "type": "object",
+          "properties": {
+            "类型": {
+              "type": "string"
+            },
+            "结果": {
+              "type": "string"
+            },
+            "是否成功": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "类型",
+            "结果",
+            "是否成功"
+          ]
+        },
+        "好感度": {
+          "default": 40,
+          "type": "number"
+        },
+        "内心想法": {
+          "type": "string"
+        },
+        "简述": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "__schema0": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "enum": [
+          "力量",
+          "敏捷",
+          "体质",
+          "智力",
+          "感知",
+          "魅力"
+        ]
+      },
+      "additionalProperties": {
+        "type": "number"
+      },
+      "required": [
+        "力量",
+        "敏捷",
+        "体质",
+        "智力",
+        "感知",
+        "魅力"
+      ]
+    },
+    "__schema1": {
+      "type": "string",
+      "enum": [
+        "普通",
+        "精品",
+        "稀有",
+        "神器",
+        "史诗",
+        "传说"
+      ]
+    },
+    "__schema2": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,90 @@
+# yaml-language-server: $schema=../../schema.json
+version: arpg-0.2
+
+progression:
+  levelCap: 60
+  expGrowthRate: 1.2
+  baseExpToNext: 100
+
+world:
+  day: 1
+  time: 清晨
+  weather: 阴
+  location: 废船村
+  danger: 15
+  noise: 0
+  exploration: 安全区
+
+player:
+  name: 陈春璃
+  profession: 村民
+  level: 1
+  exp: 0
+  expToNext: 100
+  hp: 100
+  maxHp: 100
+  stamina: 100
+  hunger: 8
+  thirst: 10
+  radiation: 0
+  injury: 0
+  atk: 12
+  def: 8
+  speed: 10
+  crit: 5
+  gold: 120
+  ammo: 24
+  medkit: 2
+  scrap: 6
+
+equipment:
+  mainWeapon: 锈迹手枪
+  subWeapon: 应急短刀
+  head: 破布头巾
+  chest: 废铁拼接护甲
+  hands: 磨损手套
+  legs: 旧工装裤
+  accessory1: 旧世界指南针
+  accessory2: 空
+
+combat:
+  inBattle: false
+  round: 1
+  enemy:
+    name: 无
+    category: 无
+    threat: I
+    level: 1
+    hp: 0
+    maxHp: 1
+    intent: 观望
+    expReward: 0
+    elite: false
+    bountyBoss: false
+  lastCheck: 尚未进行判定
+  lastAction: 待命
+  options:
+    - label: 去废船外缘拾荒
+      risk: 低
+    - label: 接下村口清剿委托
+      risk: 中
+    - label: 追踪夜间嚎叫源头
+      risk: 高
+
+quest:
+  id: quest-001
+  title: 废船村外围清剿
+  stage: 可接取
+  target: 清理村外1处低威胁怪物点
+  progress: 0/1
+  reward: 80g，子弹x12，废料x4
+
+status:
+  effects: []
+  reputationShipVillage: 5
+  wantedLevel: 0
+  campDanger: 10
+
+log:
+  summary: 你是废船村的普通村民，局势恶化后被迫卷入外圈清剿与求生行动。
+  lootHint: 暂无掉落。
