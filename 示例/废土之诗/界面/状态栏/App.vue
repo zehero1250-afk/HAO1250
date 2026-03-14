@@ -19,15 +19,21 @@
       <div class="bars">
         <div class="bar-block">
           <div class="bar-label"><span>HP</span><span>{{ data.player.hp }}/{{ data.player.maxHp }}</span></div>
-          <div class="bar"><div class="fill hp" :style="{ width: percent(data.player.hp, data.player.maxHp) }" /></div>
+          <div class="bar">
+            <div class="fill hp" :style="{ width: percent(data.player.hp, data.player.maxHp) }" />
+          </div>
         </div>
         <div class="bar-block">
           <div class="bar-label"><span>体力</span><span>{{ data.player.stamina }}/100</span></div>
-          <div class="bar"><div class="fill stamina" :style="{ width: `${data.player.stamina}%` }" /></div>
+          <div class="bar">
+            <div class="fill stamina" :style="{ width: `${data.player.stamina}%` }" />
+          </div>
         </div>
         <div class="bar-block">
           <div class="bar-label"><span>经验</span><span>{{ data.player.exp }}/{{ data.player.expToNext }}</span></div>
-          <div class="bar"><div class="fill exp" :style="{ width: percent(data.player.exp, data.player.expToNext) }" /></div>
+          <div class="bar">
+            <div class="fill exp" :style="{ width: percent(data.player.exp, data.player.expToNext) }" />
+          </div>
         </div>
       </div>
     </section>
@@ -40,6 +46,12 @@
           <span>DEF {{ data.player.def }}</span>
           <span>SPD {{ data.player.speed }}</span>
           <span>CRIT {{ data.player.crit }}%</span>
+        </div>
+        <div class="stats-row secondary">
+          <span>基础ATK {{ data.player.baseStats?.atk ?? data.player.atk }}</span>
+          <span>装备+ {{ data.equipmentBonus?.atk ?? 0 }} / {{ data.equipmentBonus?.def ?? 0 }}</span>
+          <span>生命+ {{ data.equipmentBonus?.maxHp ?? 0 }}</span>
+          <span>词条 {{ (data.equipmentBonus?.notes || []).length }}</span>
         </div>
         <div class="enemy" v-if="data.combat.inBattle">
           <div class="enemy-head">
@@ -76,37 +88,203 @@
         <p class="hint">营地危险：{{ data.status.campDanger }}</p>
       </article>
 
-      <article class="panel">
-        <h2>装备与补给</h2>
+      <article class="panel inventory-panel">
+        <div class="section-head">
+          <h2>装备与补给</h2>
+          <span class="hint">点击查看详情</span>
+        </div>
         <div class="list">
-          <div class="item"><span>主武器</span><strong>{{ data.equipment.mainWeapon }}</strong></div>
-          <div class="item"><span>副武器</span><strong>{{ data.equipment.subWeapon }}</strong></div>
-          <div class="item"><span>头部</span><strong>{{ data.equipment.head }}</strong></div>
-          <div class="item"><span>躯干</span><strong>{{ data.equipment.chest }}</strong></div>
-          <div class="item"><span>手部</span><strong>{{ data.equipment.hands }}</strong></div>
-          <div class="item"><span>腿部</span><strong>{{ data.equipment.legs }}</strong></div>
-          <div class="item"><span>饰品1</span><strong>{{ data.equipment.accessory1 }}</strong></div>
-          <div class="item"><span>饰品2</span><strong>{{ data.equipment.accessory2 }}</strong></div>
-          <div class="item"><span>子弹</span><strong>{{ data.player.ammo }}</strong></div>
-          <div class="item"><span>医疗包</span><strong>{{ data.player.medkit }}</strong></div>
-          <div class="item"><span>废料</span><strong>{{ data.player.scrap }}</strong></div>
-          <div class="item"><span>金币</span><strong>{{ data.player.gold }}</strong></div>
+          <button
+            v-for="entry in equipmentEntries"
+            :key="entry.key"
+            type="button"
+            class="item item-button"
+            @click="openDetail(entry)"
+          >
+            <span>{{ entry.label }}</span>
+            <strong>{{ entry.name }}</strong>
+          </button>
+          <button
+            v-for="entry in supplyEntries"
+            :key="entry.key"
+            type="button"
+            class="item item-button supply"
+            @click="openDetail(entry)"
+          >
+            <span>{{ entry.label }}</span>
+            <strong>{{ entry.value }}</strong>
+          </button>
         </div>
       </article>
     </section>
+
+    <div v-if="selectedDetail" class="detail-backdrop" @click.self="closeDetail">
+      <article class="detail-modal">
+        <div class="detail-head">
+          <div>
+            <p class="detail-kicker">{{ selectedDetail.kindLabel }} | {{ selectedDetail.slotOrCategory }}</p>
+            <h3>{{ selectedDetail.name }}</h3>
+            <p class="hint" v-if="selectedDetail.grade">{{ selectedDetail.grade }}</p>
+          </div>
+          <button type="button" class="close-button" @click="closeDetail">关闭</button>
+        </div>
+
+        <p class="detail-summary">{{ selectedDetail.summary }}</p>
+        <p class="detail-flavor" v-if="selectedDetail.flavor">{{ selectedDetail.flavor }}</p>
+
+        <div class="detail-stats" v-if="selectedDetail.stats.length">
+          <div v-for="stat in selectedDetail.stats" :key="stat.label" class="detail-stat">
+            <span>{{ stat.label }}</span>
+            <strong>{{ stat.value }}</strong>
+          </div>
+        </div>
+
+        <div class="effects-block" v-if="selectedDetail.effects.length">
+          <h4>效果词条</h4>
+          <div class="effects-list">
+            <div v-for="effect in selectedDetail.effects" :key="effect.name" class="effect-card">
+              <strong>{{ effect.name }}</strong>
+              <p>{{ effect.description }}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="effects-block" v-if="selectedDetail.kind === 'equipment' && bonusNotes.length">
+          <h4>当前装备总加成摘要</h4>
+          <div class="effects-list compact">
+            <div v-for="note in bonusNotes" :key="note" class="effect-card">
+              <p>{{ note }}</p>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useDataStore } from './store';
+
+type EffectItem = {
+  name: string;
+  description: string;
+};
+
+type DetailEntry = {
+  key: string;
+  kind: 'equipment' | 'supply';
+  kindLabel: string;
+  label: string;
+  name: string;
+  value?: string | number;
+  slotOrCategory: string;
+  grade?: string;
+  summary: string;
+  flavor: string;
+  stats: Array<{ label: string; value: string }>;
+  effects: EffectItem[];
+};
 
 const store = useDataStore();
 const data = computed(() => store.data);
+const selectedDetail = ref<DetailEntry | null>(null);
+
+const equipmentLabels = {
+  mainWeapon: '主武器',
+  subWeapon: '副武器',
+  head: '头部',
+  chest: '躯干',
+  hands: '手部',
+  legs: '腿部',
+  accessory1: '饰品1',
+  accessory2: '饰品2',
+} as const;
+
+const supplyLabels = {
+  ammo: '子弹',
+  medkit: '医疗包',
+  scrap: '废料',
+  gold: '金币',
+} as const;
 
 function percent(current: number, max: number) {
   if (!max) return '0%';
   return `${Math.max(0, Math.min(100, (current / max) * 100))}%`;
+}
+
+function collectStats(source: Record<string, unknown> | undefined) {
+  if (!source) return [];
+  const rows = [
+    ['攻击', source.atk],
+    ['防御', source.def],
+    ['速度', source.speed],
+    ['暴击', source.crit],
+    ['生命', source.maxHp],
+  ] as const;
+
+  return rows
+    .filter(([, value]) => Number(value || 0) > 0)
+    .map(([label, value]) => ({
+      label,
+      value: label === '暴击' ? `+${value}%` : `+${value}`,
+    }));
+}
+
+const equipmentEntries = computed<DetailEntry[]>(() => {
+  if (!data.value) return [];
+
+  return Object.entries(equipmentLabels).map(([key, label]) => {
+    const name = data.value.equipment?.[key] || '空';
+    const meta = data.value.equipmentMeta?.[key] || {};
+
+    return {
+      key,
+      kind: 'equipment',
+      kindLabel: '装备',
+      label,
+      name,
+      slotOrCategory: meta.slot || label,
+      grade: meta.grade || '',
+      summary: meta.summary || `${name} 当前暂无详细描述。`,
+      flavor: meta.flavor || '',
+      stats: collectStats(meta),
+      effects: Array.isArray(meta.effects) ? meta.effects : [],
+    };
+  });
+});
+
+const supplyEntries = computed<DetailEntry[]>(() => {
+  if (!data.value) return [];
+
+  return Object.entries(supplyLabels).map(([key, label]) => {
+    const meta = data.value.supplyMeta?.[key] || {};
+    const value = data.value.player?.[key] ?? 0;
+
+    return {
+      key,
+      kind: 'supply',
+      kindLabel: '道具',
+      label,
+      name: meta.name || label,
+      value,
+      slotOrCategory: meta.category || '补给',
+      summary: meta.summary || `${label} 当前暂无详细描述。`,
+      flavor: meta.flavor || '',
+      stats: [{ label: '持有', value: String(value) }],
+      effects: Array.isArray(meta.effects) ? meta.effects : [],
+    };
+  });
+});
+
+const bonusNotes = computed<string[]>(() => data.value?.equipmentBonus?.notes || []);
+
+function openDetail(entry: DetailEntry) {
+  selectedDetail.value = entry;
+}
+
+function closeDetail() {
+  selectedDetail.value = null;
 }
 </script>
 
@@ -122,6 +300,7 @@ function percent(current: number, max: number) {
   --cyan: #78d8ff;
   --teal: #59d8c6;
   --amber: #ffb36b;
+  --danger: #ff9a62;
 
   position: relative;
   overflow: hidden;
@@ -151,8 +330,9 @@ function percent(current: number, max: number) {
 }
 
 .hero-card,
-.panel {
-  background: linear-gradient(165deg, rgba(17, 27, 39, 0.86), rgba(12, 18, 28, 0.9));
+.panel,
+.detail-modal {
+  background: linear-gradient(165deg, rgba(17, 27, 39, 0.9), rgba(12, 18, 28, 0.94));
   border: 1px solid var(--line);
   border-radius: 12px;
   padding: 12px;
@@ -163,17 +343,32 @@ function percent(current: number, max: number) {
 .stats-row,
 .item,
 .bar-label,
-.enemy-head {
+.enemy-head,
+.detail-head,
+.section-head {
   display: flex;
   justify-content: space-between;
   gap: 12px;
 }
 
-.chips {
+.chips,
+.detail-stats,
+.effects-list {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
-  align-content: flex-start;
+}
+
+.bars,
+.grid,
+.list {
+  display: grid;
+  gap: 10px;
+}
+
+.grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 10px;
 }
 
 .chip {
@@ -193,18 +388,6 @@ function percent(current: number, max: number) {
   background: rgba(255, 179, 107, 0.1);
 }
 
-.bars,
-.grid,
-.list {
-  display: grid;
-  gap: 10px;
-}
-
-.grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  margin-top: 10px;
-}
-
 .bar {
   width: 100%;
   height: 8px;
@@ -220,29 +403,63 @@ function percent(current: number, max: number) {
   box-shadow: 0 0 10px rgba(120, 216, 255, 0.25);
 }
 
-.hp { background: linear-gradient(90deg, #4dc4ff, #8de7ff); }
-.stamina { background: linear-gradient(90deg, #31bf9f, #7aefd5); }
-.exp { background: linear-gradient(90deg, #4d92ff, #85b2ff); }
-.enemy-fill { background: linear-gradient(90deg, #ff9a62, #ffd08a); }
+.hp {
+  background: linear-gradient(90deg, #4dc4ff, #8de7ff);
+}
+
+.stamina {
+  background: linear-gradient(90deg, #31bf9f, #7aefd5);
+}
+
+.exp {
+  background: linear-gradient(90deg, #4d92ff, #85b2ff);
+}
+
+.enemy-fill {
+  background: linear-gradient(90deg, #ff9a62, #ffd08a);
+}
 
 .item {
   align-items: center;
-  padding: 7px 9px;
+  padding: 8px 10px;
   border-radius: 8px;
   border: 1px solid rgba(136, 193, 227, 0.16);
   background: rgba(9, 18, 28, 0.82);
 }
 
+.item-button {
+  width: 100%;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition:
+    border-color 0.18s ease,
+    transform 0.18s ease,
+    background 0.18s ease;
+}
+
+.item-button:hover {
+  border-color: rgba(120, 216, 255, 0.35);
+  background: rgba(17, 31, 46, 0.92);
+  transform: translateY(-1px);
+}
+
+.item-button.supply strong {
+  color: #ffd7b7;
+}
+
 .hint,
 .sub,
 .meta,
-.eyebrow {
+.eyebrow,
+.detail-kicker {
   margin: 0;
   color: var(--text-sub);
   font-size: 12px;
 }
 
-.eyebrow {
+.eyebrow,
+.detail-kicker {
   font-size: 11px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -256,13 +473,28 @@ h1 {
   font-weight: 650;
 }
 
-h2 {
-  margin: 0 0 8px;
-  font-size: 13px;
-  letter-spacing: 0.1em;
+h2,
+h3,
+h4 {
+  margin: 0;
+  letter-spacing: 0.08em;
   font-weight: 650;
-  text-transform: uppercase;
   color: #c5e8f9;
+}
+
+h2 {
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+h3 {
+  font-size: 22px;
+}
+
+h4 {
+  font-size: 12px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
 }
 
 .meta,
@@ -272,15 +504,8 @@ h2 {
   letter-spacing: 0.02em;
 }
 
-.bar-label span:first-child {
-  color: #c8e8fb;
-}
-
-.bar-label span:last-child {
-  color: #9fc0d2;
-}
-
-.stats-row span {
+.stats-row span,
+.detail-stat {
   background: rgba(120, 216, 255, 0.08);
   border: 1px solid rgba(120, 216, 255, 0.18);
   border-radius: 6px;
@@ -288,8 +513,15 @@ h2 {
   color: #d4f2ff;
 }
 
-.enemy-head strong {
-  color: #ffdbbe;
+.stats-row.secondary span {
+  color: #9fd7ef;
+}
+
+.detail-stat {
+  min-width: 88px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
 }
 
 .empty-state {
@@ -300,9 +532,96 @@ h2 {
   background: rgba(10, 17, 27, 0.8);
 }
 
+.inventory-panel {
+  position: relative;
+}
+
+.detail-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: rgba(4, 8, 14, 0.68);
+  backdrop-filter: blur(8px);
+}
+
+.detail-modal {
+  width: min(560px, 100%);
+  max-height: min(78vh, 720px);
+  overflow: auto;
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.38),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+.close-button {
+  appearance: none;
+  border: 1px solid rgba(120, 216, 255, 0.22);
+  background: rgba(120, 216, 255, 0.08);
+  color: var(--text-main);
+  border-radius: 999px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.detail-summary {
+  margin: 14px 0 8px;
+  line-height: 1.6;
+  color: var(--text-main);
+}
+
+.detail-flavor {
+  margin: 0 0 14px;
+  line-height: 1.6;
+  color: #a7c0cf;
+}
+
+.effects-block + .effects-block {
+  margin-top: 14px;
+}
+
+.effect-card {
+  flex: 1 1 220px;
+  min-width: 180px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(136, 193, 227, 0.16);
+  background: rgba(9, 18, 28, 0.84);
+}
+
+.effect-card strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #d8f3ff;
+}
+
+.effect-card p {
+  margin: 0;
+  line-height: 1.55;
+  color: var(--text-sub);
+}
+
+.effects-list.compact .effect-card {
+  flex-basis: 100%;
+}
+
 @media (max-width: 720px) {
   .grid {
     grid-template-columns: 1fr;
+  }
+
+  .detail-head,
+  .hero-main,
+  .stats-row,
+  .section-head {
+    flex-direction: column;
+  }
+
+  .detail-modal {
+    max-height: 82vh;
   }
 }
 </style>

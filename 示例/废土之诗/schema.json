@@ -77,6 +77,26 @@
         "expToNext": {
           "$ref": "#/$defs/__schema0"
         },
+        "baseStats": {
+          "type": "object",
+          "properties": {
+            "maxHp": {
+              "$ref": "#/$defs/__schema0"
+            },
+            "atk": {
+              "$ref": "#/$defs/__schema0"
+            },
+            "def": {
+              "$ref": "#/$defs/__schema0"
+            },
+            "speed": {
+              "$ref": "#/$defs/__schema0"
+            },
+            "crit": {
+              "$ref": "#/$defs/__schema1"
+            }
+          }
+        },
         "hp": {
           "$ref": "#/$defs/__schema2"
         },
@@ -168,6 +188,89 @@
         "accessory2": {
           "default": "空",
           "type": "string"
+        }
+      }
+    },
+    "equipmentMeta": {
+      "type": "object",
+      "properties": {
+        "mainWeapon": {
+          "$ref": "#/$defs/__schema3"
+        },
+        "subWeapon": {
+          "$ref": "#/$defs/__schema3"
+        },
+        "head": {
+          "$ref": "#/$defs/__schema3"
+        },
+        "chest": {
+          "$ref": "#/$defs/__schema3"
+        },
+        "hands": {
+          "$ref": "#/$defs/__schema3"
+        },
+        "legs": {
+          "$ref": "#/$defs/__schema3"
+        },
+        "accessory1": {
+          "$ref": "#/$defs/__schema3"
+        },
+        "accessory2": {
+          "$ref": "#/$defs/__schema3"
+        }
+      }
+    },
+    "equipmentBonus": {
+      "type": "object",
+      "properties": {
+        "maxHp": {
+          "$ref": "#/$defs/__schema2"
+        },
+        "atk": {
+          "$ref": "#/$defs/__schema2"
+        },
+        "def": {
+          "$ref": "#/$defs/__schema2"
+        },
+        "speed": {
+          "$ref": "#/$defs/__schema2"
+        },
+        "crit": {
+          "$ref": "#/$defs/__schema2"
+        },
+        "notes": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "supplyMeta": {
+      "default": {
+        "ammo": {},
+        "medkit": {},
+        "scrap": {},
+        "gold": {}
+      },
+      "type": "object",
+      "properties": {
+        "ammo": {
+          "default": {},
+          "$ref": "#/$defs/__schema5"
+        },
+        "medkit": {
+          "default": {},
+          "$ref": "#/$defs/__schema5"
+        },
+        "scrap": {
+          "default": {},
+          "$ref": "#/$defs/__schema5"
+        },
+        "gold": {
+          "default": {},
+          "$ref": "#/$defs/__schema5"
         }
       }
     },
@@ -360,6 +463,94 @@
     },
     "__schema2": {
       "type": "number"
+    },
+    "__schema3": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "default": "无",
+          "type": "string"
+        },
+        "slot": {
+          "default": "无",
+          "type": "string"
+        },
+        "grade": {
+          "default": "普通",
+          "type": "string"
+        },
+        "summary": {
+          "default": "无",
+          "type": "string"
+        },
+        "flavor": {
+          "default": "无",
+          "type": "string"
+        },
+        "maxHp": {
+          "$ref": "#/$defs/__schema2"
+        },
+        "atk": {
+          "$ref": "#/$defs/__schema2"
+        },
+        "def": {
+          "$ref": "#/$defs/__schema2"
+        },
+        "speed": {
+          "$ref": "#/$defs/__schema2"
+        },
+        "crit": {
+          "$ref": "#/$defs/__schema2"
+        },
+        "effects": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/__schema4"
+          }
+        }
+      }
+    },
+    "__schema4": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "default": "无",
+          "type": "string"
+        },
+        "description": {
+          "default": "无",
+          "type": "string"
+        }
+      }
+    },
+    "__schema5": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "default": "无",
+          "type": "string"
+        },
+        "category": {
+          "default": "材料",
+          "type": "string"
+        },
+        "summary": {
+          "default": "无",
+          "type": "string"
+        },
+        "flavor": {
+          "default": "无",
+          "type": "string"
+        },
+        "effects": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/__schema4"
+          }
+        }
+      }
     }
   }
 }

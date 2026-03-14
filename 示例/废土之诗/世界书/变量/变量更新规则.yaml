@@ -105,6 +105,23 @@
       首领任务金额遵循《物品价格规则》的等级定价系统。
     装备掉落: |
       装备遵循《物品价格规则》的品级生成规则，不得低品级超模。
+    装备成长结算: |
+      - 角色自身永久成长写入 player.baseStats。
+      - 装备数值加成写入 equipmentBonus。
+      - 每件装备的词条、品级、描述写入 equipmentMeta.对应槽位。
+      - 道具说明写入 supplyMeta，对应 ammo / medkit / scrap / gold。
+      - 每次换装、掉落后自动装备、任务奖励换装、装备损坏，都必须同步更新最终属性：
+        player.maxHp = player.baseStats.maxHp + equipmentBonus.maxHp
+        player.atk = player.baseStats.atk + equipmentBonus.atk
+        player.def = player.baseStats.def + equipmentBonus.def
+        player.speed = player.baseStats.speed + equipmentBonus.speed
+        player.crit = player.baseStats.crit + equipmentBonus.crit
+      - 若装备带有特殊效果，将简述写入 equipmentBonus.notes。
+      - 若 player.hp 超过新的 player.maxHp，则将 player.hp 修正为 player.maxHp。
+    装备词条映射要求: |
+      - 若装备文本里有“攻击/防御/速度/暴击/生命”类词条，必须拆解成数值更新。
+      - 单件装备的数值进入 equipmentMeta.槽位；全身汇总进入 equipmentBonus。
+      - 若仅有描述性特效，则至少写入 equipmentMeta.槽位.effects，并在 equipmentBonus.notes 留摘要。
 
   七_角色口吻约束:
     雅各布与李泰:
@@ -121,10 +138,24 @@
         level: 2
         exp: 18
         expToNext: 120
+        baseStats:
+          maxHp: 108
+          atk: 13
+          def: 9
+          speed: 10
+          crit: 5
         maxHp: 112
         atk: 13
         gold: 156
         scrap: 9
+      equipmentBonus:
+        maxHp: 4
+        atk: 0
+        def: 1
+        speed: 0
+        crit: 0
+        notes:
+          - 废铁拼接护甲：受击时冲击削减
       combat:
         enemy:
           level: 3
@@ -141,3 +172,4 @@
     - 不得敌人等级与奖励经验严重失配
     - 不得遗漏精英/赏金首领标记导致经验倍率错算
     - 不得在无战斗时保留旧敌人 hp 与 intent
+    - 不得只更新装备名而不更新 equipmentBonus 与最终属性

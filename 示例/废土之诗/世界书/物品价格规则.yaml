@@ -208,6 +208,49 @@
       - 禁止“普通品级却拥有传说级词条”。
       - 传说装备应附带更强叙事背景，可关联首领掉落或任务线。
 
+  九_装备属性落地与成长映射:
+    核心原则:
+      - 装备加成属于独立成长来源，必须与升级成长分开记录。
+      - 玩家自身成长写入 player.baseStats。
+      - 装备提供的数值写入 equipmentBonus。
+      - player.maxHp / player.atk / player.def / player.speed / player.crit 为当前最终值，用于战斗与状态栏展示。
+    装备加成建议:
+      武器:
+        - 主要提供 atk，少量提供 crit。
+        - 稀有及以上武器可附带 speed 或特殊 notes。
+      头部与躯干:
+        - 主要提供 def 与 maxHp。
+      手部与腿部:
+        - 主要提供 speed、def，少量提供 atk。
+      饰品:
+        - 主要提供 crit、speed、maxHp 或特殊 notes。
+    结算规则: |
+      发生换装、获得新装备、装备损坏或装备强化时：
+      1. 先更新 equipment 对应槽位。
+      2. 再更新 equipmentBonus。
+      3. 最后同步刷新最终属性：
+         player.maxHp = player.baseStats.maxHp + equipmentBonus.maxHp
+         player.atk = player.baseStats.atk + equipmentBonus.atk
+         player.def = player.baseStats.def + equipmentBonus.def
+         player.speed = player.baseStats.speed + equipmentBonus.speed
+         player.crit = player.baseStats.crit + equipmentBonus.crit
+      4. 若 player.hp 高于新的 player.maxHp，则将 player.hp 压到 player.maxHp。
+    装备成长定位:
+      - 升级解决基础成长。
+      - 装备解决短中期强度跃升。
+      - 首领掉落、任务奖励、商店购买都可成为装备成长来源。
+    词条自动映射:
+      - 当生成装备词条时，必须同步拆解为数值并写入对应装备详情与 equipmentBonus。
+      - 规则优先级：部位基础值 > 品级修正 > 词条附加值 > 特殊 notes。
+      - 每件装备的数值写入 equipmentMeta.对应槽位。
+      - 全身合计后的装备收益写入 equipmentBonus。
+    自动映射示例:
+      - "攻击力提升 +2" -> equipmentMeta.mainWeapon.atk = 2，并累加到 equipmentBonus.atk
+      - "暴击率 +1%" -> equipmentMeta.accessory1.crit = 1，并累加到 equipmentBonus.crit
+      - "最大生命 +4" -> equipmentMeta.chest.maxHp = 4，并累加到 equipmentBonus.maxHp
+      - "移动速度 +1" -> equipmentMeta.legs.speed = 1，并累加到 equipmentBonus.speed
+      - "受击时冲击削减" -> 写入 equipmentMeta.chest.effects，同时摘要写入 equipmentBonus.notes
+
   summary: |
     本规则统一了废土经济与装备生成逻辑：常规物价用于交易和掉落估值，首领赏金按等级定价并支持系数修正，
     装备则按品级自动映射基础数值、词条数量、强度和描述模板，便于跑团时稳定产出可用装备数据。

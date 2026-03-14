@@ -21,17 +21,23 @@ player:
   level: 1
   exp: 0
   expToNext: 100
+  baseStats:
+    maxHp: 100
+    atk: 12
+    def: 8
+    speed: 10
+    crit: 5
   hp: 100
-  maxHp: 100
+  maxHp: 104
   stamina: 100
   hunger: 8
   thirst: 10
   radiation: 0
   injury: 0
-  atk: 12
-  def: 8
-  speed: 10
-  crit: 5
+  atk: 15
+  def: 10
+  speed: 13
+  crit: 7
   gold: 120
   ammo: 24
   medkit: 2
@@ -46,6 +52,132 @@ equipment:
   legs: 旧工装裤
   accessory1: 旧世界指南针
   accessory2: 空
+
+equipmentMeta:
+  mainWeapon:
+    name: 閿堣抗鎵嬫灙
+    slot: 涓绘鍣?
+    grade: 鏅€?
+    summary: 鏉戞皯鑷埗鐨勮€佹墜鏋紝绋冲畾鎬т竴鑸紝浣嗚冻浠ュ湪杩戜腑绋嬬鑷繚銆?
+    flavor: 鏋韩鐢卞簾鑸归浂浠舵嫾鎴愶紝鎵崇増涓庢彙鎶婇兘甯︾潃鐢垫补鍜岄搧閿堝懗銆?
+    atk: 2
+    crit: 1
+    effects:
+      - name: 绠€鏄撳嚮鍙?
+        description: 棣栨灏勫嚮鏃跺懡涓ǔ瀹氾紝閫傚悎璇曟帰鎬墿鍙嶅簲銆?
+  subWeapon:
+    name: 搴旀€ョ煭鍒€
+    slot: 鍓鍣?
+    grade: 鏅€?
+    summary: 杩戣韩鑷繚鐢ㄧ煭鍒€锛岄€傚悎琚繎韬椂鍙嶆墜鎷︽尅銆?
+    flavor: 鍒冨彛鏄敤搴熸棫宸ュ叿閲嶆墦鍑烘潵鐨勶紝涓嶇畻濂界湅锛屼絾瓒冲瀹炵敤銆?
+    atk: 1
+    speed: 1
+    effects:
+      - name: 杩戣韩閫熸姭
+        description: 琚创韬椂鏇村鏄撳畬鎴愭媺寮€璺濈鎴栫揣鎬ュ弽鍑汇€?
+  head:
+    name: 鐮村竷澶村肪
+    slot: 澶撮儴
+    grade: 鏅€?
+    summary: 蔽闃冲拰鎸℃瞰鐨勭畝鏄撳ご宸撅紝鑳藉憡璇夊埆浜轰綘鑷冲皯涓嶇畻璧ょ潃涓婃垬鍦恒€?
+    flavor: 琚捣椋庡拰鐩愰浘鍚圭殑鏈夌偣鍙戠‖锛屼絾鍦ㄥ簾鍦熼噷鑳芥湁涓块亾甯冨凡缁忎笉閿欍€?
+    def: 1
+    effects:
+      - name: 闃查闃叉矙
+        description: 鍦ㄧ矇灏樸€佹疆婀夸笌娴风墿鍛冲己鐑堢殑鍦板尯鏇寸ǔ瀹氥€?
+  chest:
+    name: 搴熼搧鎷兼帴鎶ょ敳
+    slot: 韬共
+    grade: 绮惧搧
+    summary: 鐢卞簾鑸规潗鏂欐嫾鎺ョ殑鑳歌兌鐢诧紝閲嶉噺涓嶈交锛屼絾纭疄鑳芥尅涓€浜涘啿鍑汇€?
+    flavor: 鐪嬬潃鍍忎笁鍥涚涓嶅悓鐨勯搧鐗囧牚鍑烘潵鐨勪笢瑗匡紝鍗磋鏉戝瓙閲岀殑鎵嬭壓纭敓鐢熸嫾鎴愪簡鍙敤鐨勬姢鐢层€?
+    maxHp: 4
+    def: 1
+    effects:
+      - name: 鍐插嚮缂撳啿
+        description: 鍙楀埌姝ｅ潰鍐插嚮鏃舵洿鑳芥墦浣忚韩浣擄紝闃插叿缂撳啿鏁堟灉鏇存槑鏄俱€?
+  hands:
+    name: 纾ㄦ崯鎵嬪
+    slot: 鎵嬮儴
+    grade: 鏅€?
+    summary: 閫備簬鎷嗚В銆佹懇鎿︿笌鎶撴寔鐨勬棫鎵嬪锛屼笉浼氳鎵嬫帉鐩存帴琚搧鍒冨拰绮楃怀鎽╃儌銆?
+    flavor: 澶栧眰鐨枡宸茬粡璧峰眰锛屼絾寮犲彛浣嶇疆鐢ㄩ拡绾块噸缂濊繃鍑犳锛岀湅寰楀嚭甯稿勾鍦ㄥ共娲汇€?
+    speed: 1
+    effects:
+      - name: 鎶撴寔绋冲畾
+        description: 鎹㈠脊銆佺炕鎵惧拰绠€鏄撶淮淇椂鎵嬮儴鍔ㄤ綔鏇村埄钀姐€?
+  legs:
+    name: 鏃у伐瑁呰￥
+    slot: 鑵块儴
+    grade: 鏅€?
+    summary: 瀹藉ぇ鑰愮（鐨勫伐瑁呰￥锛屾柟渚夸綆韬层€佺櫥鐖拰鍦ㄦ尝娑傞噷璧板姩銆?
+    flavor: 瑁よ剼杈圭紭鏄庢樉琚潮姘村拰鏈烘补娌＄殑鍙戞殫锛屼絾鏈€鑷冲皯杩樿兘鎵涘緱浣忔媺鎵€?
+    speed: 1
+    effects:
+      - name: 绉诲姩浣欒
+        description: 短绋嬭穼閬跨殑鍔ㄤ綔鏇村啋澶卞崱浣忕殑椋庨櫓銆?
+  accessory1:
+    name: 鏃т笘鐣屾寚鍗楅拡
+    slot: 楗板搧1
+    grade: 绮惧搧
+    summary: 鑰佹棫浣嗗彲鐢ㄧ殑鎸囧崡閽堬紝璁╀綘鍦ㄥ簾鑸规潙鍛ㄨ竟涓嶅鏄撳け鍘绘柟鍚戙€?
+    flavor: 澶栧３宸茬粡琚捣鐩愯厫铓€鍑哄緢澶氱粏鐥曪紝浣嗛拡鑺緷鏃ф參鎱㈠洖鍒版浣嶃€?
+    crit: 1
+    effects:
+      - name: 鍔ㄧ嚎棰勬祴
+        description: 鍦ㄥ紑闃斿尯鍩熻瀵熸晫浜烘椂锛屾洿瀹规槗鎵惧埌鍙互寮€鏋殑瑙掑害銆?
+  accessory2:
+    name: 绌?
+    slot: 楗板搧2
+    grade: 鏃?
+    summary: 鏆傛棤瑁呭銆?
+    flavor: 杩欎釜鎻掓Ы杩樼暀鐫€锛岀瓑寰呬笅涓€浠跺€煎緱淇濆瓨鐨勪笢瑗裤€?
+    effects: []
+equipmentBonus:
+  maxHp: 4
+  atk: 3
+  def: 2
+  speed: 3
+  crit: 2
+  notes:
+    - 搴熼搧鎷兼帴鎶ょ敳：鍐插嚮缂撳啿
+    - 閿堣抗鎵嬫灙：绠€鏄撳嚮鍙?
+    - 鏃т笘鐣屾寚鍗楅拡：鍔ㄧ嚎棰勬祴
+
+supplyMeta:
+  ammo:
+    name: 鎵嬫灙寮?
+    category: 寮硅嵂
+    summary: 鐢ㄤ簬涓绘鍣ㄧ殑鏍囧噯娑堣€楀脊锛屾垬鏂椾腑鏈€瀹规槗琚墦绌虹殑璧勬簮銆?
+    flavor: 鍚勭鏉ユ簮鎷煎湪涓€璧风殑寮瑰ご鍜岃嵂澹筹紝鐪嬭捣鏉ヤ笉閭ｄ箞鏁撮綈锛屼絾鑳芥墦鍝嶅氨鏄ソ瀛愬脊銆?
+    effects:
+      - name: 灏勫嚮娑堣€?
+        description: 鏅€氬皠鍑绘瘡娆℃秷鑰?1鍙戯紝鍘嬪埗灏勫嚮娑堣€楁洿楂樸€?
+  medkit:
+    name: 鍖荤枟鍖?
+    category: 娌荤枟
+    summary: 鍚粧甯︺€佹秷姣掑拰绠€鏄撴琛€鐢ㄥ搧鐨勬晳鎬ュ寘锛岃兘鍦ㄨ惤闅鹃噷鎷変綘涓€鎶娿€?
+    flavor: 鍖呰姣涜竟宸茬粡纾ㄦ崯锛屼絾鍐呴儴鐨勮嵂鍝佸拰缁峰甫杩樿灏介噺淇濇寔鍦ㄥ共鐕ュ彲鐢ㄧ殑鐘舵€併€?
+    effects:
+      - name: 绱ф€ユ仮澶?
+        description: 浣跨敤鍚庢仮澶嶇敓鍛斤紝骞跺湪杈冭交浼ゅ娍鏃剁紦瑙ｆ寔缁伓鍖栥€?
+  scrap:
+    name: 搴熸枡
+    category: 鏉愭枡
+    summary: 鏉ユ簮娣锋潅鐨勯噾灞炪€佺敤鍧忕殑绾跨紗鍜屽彲鎷嗚В闆朵欢锛屾槸鍒朵綔鍜屼慨鐞嗙殑搴曞瓙銆?
+    flavor: 搴熻埞鏉戠殑浜哄嚑涔庝粈涔堥兘浼氭墦鎴愨€滃簾鏂欌€濇敹璧锋潵锛屽洜涓鸿皝涔熶笉鐭ラ亾涓嬫缂虹殑鏄笉鏄氨鏄繖涓€鍧椼€?
+    effects:
+      - name: 淇悊鏉愭枡
+        description: 鍒朵綔銆佺淮淇€佷换鍔″湴鐐规悳鍒椂鐨勫父瑙佸熀纭€鏉愭枡銆?
+  gold:
+    name: 澶嶅叴甯?
+    category: 璐у竵
+    summary: 搴熷湡涓婄浉瀵瑰悇鍔垮姏閫氱敤鐨勭粨绠楄揣甯侊紝浣嗗湪鍋忚繙鑱氳惤鏈夋椂涔熶笉濡傚疄鐗╁ソ浣裤€?
+    flavor: 璇村埌搴曞彧鏄俊鐢ㄥ拰绉╁簭鐨勫欢浼革紝浣嗚嚦灏戠幇鍦ㄨ繕鏈夊緢澶氫汉璁ゃ€?
+    effects:
+      - name: 浜ゆ槗缁撶畻
+        description: 璐拱銆佷换鍔″彂鏀惧拰鎮祻棰嗗彇鐨勫熀纭€璐у竵銆?
 
 combat:
   inBattle: false
