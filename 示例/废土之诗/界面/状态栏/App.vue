@@ -99,7 +99,7 @@
             :key="entry.key"
             type="button"
             class="item item-button"
-            @click="openDetail(entry)"
+            @click.stop.prevent="openDetail(entry)"
           >
             <span>{{ entry.label }}</span>
             <strong>{{ entry.name }}</strong>
@@ -109,7 +109,7 @@
             :key="entry.key"
             type="button"
             class="item item-button supply"
-            @click="openDetail(entry)"
+            @click.stop.prevent="openDetail(entry)"
           >
             <span>{{ entry.label }}</span>
             <strong>{{ entry.value }}</strong>
@@ -118,47 +118,49 @@
       </article>
     </section>
 
-    <div v-if="selectedDetail" class="detail-backdrop" @click.self="closeDetail">
-      <article class="detail-modal">
-        <div class="detail-head">
-          <div>
-            <p class="detail-kicker">{{ selectedDetail.kindLabel }} | {{ selectedDetail.slotOrCategory }}</p>
-            <h3>{{ selectedDetail.name }}</h3>
-            <p class="hint" v-if="selectedDetail.grade">{{ selectedDetail.grade }}</p>
+    <Teleport to="body">
+      <div v-if="selectedDetail" class="detail-backdrop" @click.self="closeDetail">
+        <article class="detail-modal" @click.stop>
+          <div class="detail-head">
+            <div>
+              <p class="detail-kicker">{{ selectedDetail.kindLabel }} | {{ selectedDetail.slotOrCategory }}</p>
+              <h3>{{ selectedDetail.name }}</h3>
+              <p class="hint" v-if="selectedDetail.grade">{{ selectedDetail.grade }}</p>
+            </div>
+            <button type="button" class="close-button" @click.stop.prevent="closeDetail">关闭</button>
           </div>
-          <button type="button" class="close-button" @click="closeDetail">关闭</button>
-        </div>
 
-        <p class="detail-summary">{{ selectedDetail.summary }}</p>
-        <p class="detail-flavor" v-if="selectedDetail.flavor">{{ selectedDetail.flavor }}</p>
+          <p class="detail-summary">{{ selectedDetail.summary }}</p>
+          <p class="detail-flavor" v-if="selectedDetail.flavor">{{ selectedDetail.flavor }}</p>
 
-        <div class="detail-stats" v-if="selectedDetail.stats.length">
-          <div v-for="stat in selectedDetail.stats" :key="stat.label" class="detail-stat">
-            <span>{{ stat.label }}</span>
-            <strong>{{ stat.value }}</strong>
-          </div>
-        </div>
-
-        <div class="effects-block" v-if="selectedDetail.effects.length">
-          <h4>效果词条</h4>
-          <div class="effects-list">
-            <div v-for="effect in selectedDetail.effects" :key="effect.name" class="effect-card">
-              <strong>{{ effect.name }}</strong>
-              <p>{{ effect.description }}</p>
+          <div class="detail-stats" v-if="selectedDetail.stats.length">
+            <div v-for="stat in selectedDetail.stats" :key="stat.label" class="detail-stat">
+              <span>{{ stat.label }}</span>
+              <strong>{{ stat.value }}</strong>
             </div>
           </div>
-        </div>
 
-        <div class="effects-block" v-if="selectedDetail.kind === 'equipment' && bonusNotes.length">
-          <h4>当前装备总加成摘要</h4>
-          <div class="effects-list compact">
-            <div v-for="note in bonusNotes" :key="note" class="effect-card">
-              <p>{{ note }}</p>
+          <div class="effects-block" v-if="selectedDetail.effects.length">
+            <h4>效果词条</h4>
+            <div class="effects-list">
+              <div v-for="effect in selectedDetail.effects" :key="effect.name" class="effect-card">
+                <strong>{{ effect.name }}</strong>
+                <p>{{ effect.description }}</p>
+              </div>
             </div>
           </div>
-        </div>
-      </article>
-    </div>
+
+          <div class="effects-block" v-if="selectedDetail.kind === 'equipment' && bonusNotes.length">
+            <h4>当前装备总加成摘要</h4>
+            <div class="effects-list compact">
+              <div v-for="note in bonusNotes" :key="note" class="effect-card">
+                <p>{{ note }}</p>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </Teleport>
   </div>
 </template>
 
@@ -429,6 +431,9 @@ function closeDetail() {
 
 .item-button {
   width: 100%;
+  position: relative;
+  z-index: 1;
+  pointer-events: auto;
   color: inherit;
   cursor: pointer;
   text-align: left;
