@@ -296,7 +296,6 @@
               "type": "string"
             },
             "threat": {
-              "default": "I",
               "type": "string",
               "enum": [
                 "I",
