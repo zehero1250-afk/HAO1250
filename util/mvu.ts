@@ -37,12 +37,17 @@ export function defineMvuDataStore<T extends z.ZodObject>(
             data.value = result.data;
           });
           if (!_.isEqual(stat_data, result.data)) {
+<<<<<<< HEAD
             const dataToWrite = applyStatDataToWrite(result.data);
             updateVariablesWith(variables => _.set(variables, 'stat_data', dataToWrite), variable_option);
+=======
+            updateVariablesWith(variables => _.set(variables, 'stat_data', result.data), variable_option);
+>>>>>>> a29fe33091e38cf7a506efd6e481bac35ed6d521
           }
         }
       }, 2000);
 
+<<<<<<< HEAD
       /** 写回前保留变量中已有的 主角.队友，避免 schema 默认 [] 覆盖剧情写入的队友名单 */
       function applyStatDataToWrite(toWrite: z.infer<T>): z.infer<T> {
         const current = _.get(getVariables(variable_option), 'stat_data', {}) as Record<string, unknown>;
@@ -54,6 +59,8 @@ export function defineMvuDataStore<T extends z.ZodObject>(
         return _.set(_.cloneDeep(toWrite), '主角.队友', current队友) as z.infer<T>;
       }
 
+=======
+>>>>>>> a29fe33091e38cf7a506efd6e481bac35ed6d521
       const { ignoreUpdates } = watchIgnorable(
         data,
         new_data => {
@@ -66,9 +73,13 @@ export function defineMvuDataStore<T extends z.ZodObject>(
               data.value = result.data;
             });
           }
+<<<<<<< HEAD
           console.info('[MVU] 写回变量', variable_option.type, variable_option.type === 'message' ? `message_id:${variable_option.message_id}` : '');
           const dataToWrite = applyStatDataToWrite(result.data);
           updateVariablesWith(variables => _.set(variables, 'stat_data', dataToWrite), variable_option);
+=======
+          updateVariablesWith(variables => _.set(variables, 'stat_data', result.data), variable_option);
+>>>>>>> a29fe33091e38cf7a506efd6e481bac35ed6d521
         },
         { deep: true },
       );

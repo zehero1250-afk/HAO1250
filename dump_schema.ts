@@ -5,7 +5,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import z from 'zod';
 
+<<<<<<< HEAD
 fs.globSync('{src,示例}/**/schema.ts').forEach(async schema_file => {
+=======
+fs.globSync('src/**/schema.ts').forEach(async schema_file => {
+>>>>>>> a29fe33091e38cf7a506efd6e481bac35ed6d521
   try {
     globalThis._ = _;
     globalThis.z = z;
