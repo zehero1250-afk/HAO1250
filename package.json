@@ -1,20 +1,29 @@
 {
   "scripts": {
     "build:dev": "webpack --mode development",
+<<<<<<< HEAD
     "build": "webpack --mode production && node scripts/copy-statusbar-to-regex.js",
     "ship:build": "pnpm build && pnpm ship",
     "watch": "webpack --mode development --watch --progress",
     "serve:dist": "node scripts/serve-dist-cors.js",
     "ship": "node scripts/ship.mjs",
     "statusbar:url": "node scripts/print-wasteland-statusbar-url.mjs",
+=======
+    "build": "webpack --mode production",
+    "watch": "webpack --mode development --watch --progress",
+>>>>>>> ca4c8b1b9f4d81aabc8d22440a4a180fca5f4409
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,css,scss,html,vue}\" --no-error-on-unmatched-pattern",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "dump": "node dump_schema.ts",
+<<<<<<< HEAD
     "sync": "node tavern_sync.mjs",
     "build:bundle": "pnpm build && node tavern_sync.mjs bundle 黄晓林角色卡",
     "保存黄晓林": "pnpm run build:bundle && node scripts/post-bundle-reminder.js",
     "chrome:mcp": "powershell -ExecutionPolicy Bypass -File scripts/launch-chrome-for-mcp.ps1"
+=======
+    "sync": "node tavern_sync.mjs"
+>>>>>>> ca4c8b1b9f4d81aabc8d22440a4a180fca5f4409
   },
   "browserslist": [
     "defaults and partially supports es6-module"
