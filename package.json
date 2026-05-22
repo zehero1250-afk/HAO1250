@@ -1,20 +1,29 @@
 {
   "scripts": {
     "build:dev": "webpack --mode development",
+<<<<<<< HEAD
     "build": "webpack --mode production && node scripts/copy-statusbar-to-regex.js",
     "ship:build": "pnpm build && pnpm ship",
     "watch": "webpack --mode development --watch --progress",
     "serve:dist": "node scripts/serve-dist-cors.js",
     "ship": "node scripts/ship.mjs",
     "statusbar:url": "node scripts/print-wasteland-statusbar-url.mjs",
+=======
+    "build": "webpack --mode production",
+    "watch": "webpack --mode development --watch --progress",
+>>>>>>> 6a70f8e1a961db42005bf8013b76cf97e1512794
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,css,scss,html,vue}\" --no-error-on-unmatched-pattern",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "dump": "node dump_schema.ts",
+<<<<<<< HEAD
     "sync": "node tavern_sync.mjs",
     "build:bundle": "pnpm build && node tavern_sync.mjs bundle 黄晓林角色卡",
     "保存黄晓林": "pnpm run build:bundle && node scripts/post-bundle-reminder.js",
     "chrome:mcp": "powershell -ExecutionPolicy Bypass -File scripts/launch-chrome-for-mcp.ps1"
+=======
+    "sync": "node tavern_sync.mjs"
+>>>>>>> 6a70f8e1a961db42005bf8013b76cf97e1512794
   },
   "browserslist": [
     "defaults and partially supports es6-module"
@@ -90,6 +99,10 @@
     "@vueuse/integrations": "^13.9.0",
     "@vueuse/shared": "^13.9.0",
     "async-wait-until": "^2.0.31",
+<<<<<<< HEAD
+=======
+    "axios": "1.14.0",
+>>>>>>> 6a70f8e1a961db42005bf8013b76cf97e1512794
     "compare-versions": "^6.1.1",
     "dedent": "^1.7.2",
     "gsap": "^3.15.0",
