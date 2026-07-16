@@ -107,6 +107,7 @@ function watch_tavern_helper(compiler: webpack.Compiler) {
 }
 
 let watcher: FSWatcher;
+<<<<<<< HEAD
 function safeExec(command: string, cwd: string, onErrorTag: string, cb?: (err: Error | null) => void) {
   try {
     exec(command, { cwd }, err => {
@@ -122,6 +123,10 @@ function safeExec(command: string, cwd: string, onErrorTag: string, cb?: (err: E
 }
 const dump = () => {
   safeExec('pnpm dump', import.meta.dirname, 'schema_dump');
+=======
+const dump = () => {
+  exec('pnpm dump', { cwd: import.meta.dirname });
+>>>>>>> b6c722413d8cfdaf014bbb3f87518fd8c19754be
   console.info('\x1b[36m[schema_dump]\x1b[0m 已将所有 schema.ts 转换为 schema.json');
 };
 const dump_debounced = _.debounce(dump, 500, { leading: true, trailing: false });
@@ -141,6 +146,7 @@ function schema_dump(compiler: webpack.Compiler) {
   }
 }
 
+<<<<<<< HEAD
 /** 监听推送时，sync watch 会从酒馆拉取角色卡并写回本地，正则文件会被酒馆端保存的内容覆盖；
  * 酒馆保存/序列化时可能对内容做转义或 Markdown 处理，导致 HTML/JS 里的反引号 ` 被替换。
  * 因此在 watch 下若当前构建的是黄晓林状态栏，用 dist 产出覆盖正则文件，保证 ``` 不被拉取内容覆盖。 */
@@ -168,6 +174,11 @@ function copy_statusbar_on_done(entry: Entry) {
 let child_process: ChildProcess;
 const bundle = () => {
   safeExec('pnpm sync bundle all', import.meta.dirname, 'tavern_sync');
+=======
+let child_process: ChildProcess;
+const bundle = () => {
+  exec('pnpm sync bundle all', { cwd: import.meta.dirname });
+>>>>>>> b6c722413d8cfdaf014bbb3f87518fd8c19754be
   console.info('\x1b[36m[tavern_sync]\x1b[0m 已打包所有配置了的角色卡/世界书/预设');
 };
 const bundle_debounced = _.debounce(bundle, 500, { leading: true, trailing: false });
@@ -475,7 +486,10 @@ function parse_configuration(entry: Entry): (_env: any, argv: any) => webpack.Co
     )
       .concat(
         { apply: watch_tavern_helper },
+<<<<<<< HEAD
         copy_statusbar_on_done(entry),
+=======
+>>>>>>> b6c722413d8cfdaf014bbb3f87518fd8c19754be
         { apply: schema_dump },
         { apply: tavern_sync },
         new VueLoaderPlugin(),
@@ -490,6 +504,10 @@ function parse_configuration(entry: Entry): (_env: any, argv: any) => webpack.Co
             { from: 'klona', imports: ['klona'] },
             { from: 'vue-final-modal', imports: ['useModal'] },
             { from: 'zod', imports: ['z'] },
+<<<<<<< HEAD
+=======
+            { from: 'type-fest', imports: [['*', 'TypeFest']], type: true },
+>>>>>>> b6c722413d8cfdaf014bbb3f87518fd8c19754be
           ],
         }),
         unpluginVueComponents({
@@ -598,9 +616,23 @@ function parse_configuration(entry: Entry): (_env: any, argv: any) => webpack.Co
       const cdn = {
         sass: 'https://jspm.dev/sass',
       };
+<<<<<<< HEAD
       return callback(
         null,
         'module-import ' + (cdn[request as keyof typeof cdn] ?? `https://testingcf.jsdelivr.net/npm/${request}/+esm`),
+=======
+      const package_json = JSON.parse(fs.readFileSync(path.join(import.meta.dirname, 'package.json'), 'utf-8')) as {
+        dependencies?: Record<string, string>;
+        devDependencies?: Record<string, string>;
+      };
+      const package_versions = { ...package_json.devDependencies, ...package_json.dependencies };
+      const version = package_versions[request]?.replace(/^[~^]/, '');
+      const versioned_request = /^[.\d]+$/.test(version) ? `${request}@${version}` : request;
+      return callback(
+        null,
+        'module-import ' +
+          (cdn[request as keyof typeof cdn] ?? `https://testingcf.jsdelivr.net/npm/${versioned_request}/+esm`),
+>>>>>>> b6c722413d8cfdaf014bbb3f87518fd8c19754be
       );
     },
   });
